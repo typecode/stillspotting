@@ -1,0 +1,12 @@
+
+#query{
+  margin:20px;
+}
+
+#map {
+  height: 350px;
+  width:600px;
+  position:relative;
+  margin:auto;
+  display:block;
+}
