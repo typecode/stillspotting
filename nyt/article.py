@@ -30,17 +30,18 @@ class Article:
       self.emit(req_id,json)
     
     http.fetch(url,callback=handle_response)
+  
+  def listen(self,req_id,handler):
+    print 'Article.listen'
+    self.listeners[req_id] = handler
+    return []
     
   def emit(self,req_id,data):
     print 'Article.emit'
+    if req_id in self.listeners and self.listeners[req_id] is not None:
+      self.listeners[req_id]({'articles':data})
+  
+  def stopListening(self,req_id):
+    print 'Article.stopListening'
     if req_id in self.listeners:
-      self.listeners[req_id](data)
       self.listeners[req_id] = None
-      
-  def listen(self,req_id,handler):
-    print 'Article.emit'
-    if req_id in self.listeners and self.listeners is not None:
-      handler(self.listeners[req_id])
-      self.listeners = None;
-    else:
-      self.listeners[req_id] = handler

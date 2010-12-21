@@ -17,25 +17,25 @@ var app = {
     
     app.viz = tc.viz();
     
-    app.Y.io('/newswire/today',
-      {on:{
-        success:function(transactionId, response, arguments){
-          var json, i;
-          try{
-            json = app.Y.JSON.parse(response.responseText);
-            //app.viz.addWireItems(json)
-            //app.fire('poller:success',{data:json});
-          }catch(error){
-            tc.util.log(error);
-          }
-        }
-      }}
-    );
+    //app.Y.io('/newswire/today',
+    //  {on:{
+    //    success:function(transactionId, response, arguments){
+    //      var json, i;
+    //      try{
+    //        json = app.Y.JSON.parse(response.responseText);
+    //        //app.viz.addWireItems(json)
+    //        //app.fire('poller:success',{data:json});
+    //      }catch(error){
+    //        tc.util.log(error);
+    //      }
+    //    }
+    //  }}
+    //);
     
-    app.poller = tc.poller({uri:'/newswire/live'});
-    if(app.poller){
-      app.poller.poll();
-    }
+    //app.poller = tc.poller({uri:'/newswire/live'});
+    //if(app.poller){
+    //  app.poller.poll();
+    //}
   }
   
   app.setup_submission_form = function(){
@@ -70,8 +70,16 @@ var app = {
             try{
               json = app.Y.JSON.parse(response.responseText);
               tc.util.dump(json);
+              if(json.comments){
+                app.viz.renderComments(json.comments)
+              }
+              if(json.articles){
+                
+              }
+              app.listen_for_updates(req_id)
             }catch(error){
               tc.util.log(error);
+              app.listen_for_updates(req_id)
             }
           }
         }}

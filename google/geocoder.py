@@ -4,48 +4,76 @@ import threading
 
 sys.path.append("lib")
 import tornado.httpclient
+import pymongo
 
 class Geocoder:
   
-  queue = []
+  local_queue = []
+  local_stopped = True
+  remote_queue = []
+  remote_stopped = True
   request_timer = None
   
   def __init__(self):
     print 'Geocoder()'
-    self.check_queue()
-    
-  def check_queue(self):
-    print 'Geocoder.check_queue'
-    if len(self.queue) > 0:
-      self.request_timer = threading.Timer(0.5,self.geocode)
-      self.request_timer.start()
-    else:
-      self.request_timer = threading.Timer(5,self.check_queue)
-      self.request_timer.start()
+    self.mongo_conn = pymongo.Connection('localhost', 27017)
+    self.db = self.mongo_conn['google']
     
   def add_to_queue(self,string,callback):
     print 'Geocoder.add_to_queue'
-    self.queue.append([string,callback]);
+    item = [string,callback]  
+    self.add_to_local(item)
     
-  def geocode(self):
-    print 'Geocoder.geocode'
+  def add_to_local(self,item):
+    print 'Geocoder.add_to_local'
+    self.local_queue.append(item)
+    if self.local_stopped is True:
+      self.local_stopped = False
+      self.geocode_local()
     
+  def add_to_remote(self,item):
+    print 'Geocoder.add_to_remote'
+    self.remote_queue.append(item)
+    if self.remote_stopped is True:
+      self.remote_stopped = False
+      t = threading.Timer(1.0,self.geocode_remote)
+      t.start()
+    
+  def geocode_local(self):
+    print 'Geocoder.geocode_local'
+    if len(self.local_queue) == 0:
+      self.local_stopped = True
+      return
+    item = self.local_queue.pop(0)
+    local = self.db.geo.find_one({'query':item[0]})
+    if local is not None:
+      item[1](local)
+    else:
+      self.add_to_remote(item)
+    self.geocode_local()
+    
+  def geocode_remote(self):
+    print 'Geocoder.geocode_remote'
     http = tornado.httpclient.AsyncHTTPClient()
-    item = self.queue.pop(0)
-    
+    if len(self.remote_queue) == 0:
+      self.remote_stopped = True
+      return
+    item = self.remote_queue.pop(0)
     def handle_response(response):
       print 'Geocoder.geocode.handle_response'
-      print str(response.body)
-      self.check_queue()
-      item[1](response)
-    
+      json = tornado.escape.json_decode(response.body)
+      doc = {
+        'query':item[0],
+        'response':json
+      }
+      print str(doc)
+      self.db.geo.insert(doc)
+      item[1](json)
+      t = threading.Timer(1.0,self.geocode_remote)
+      t.start()
     pars = {
-      'address':item[0].replace(' ','+')
+      'address':item[0].replace(' ','+'),
+      'sensor':'false'
     }
-    
     url = 'http://maps.googleapis.com/maps/api/geocode/json?'+urllib.urlencode(pars)
-    
-    print(str(url))
-    
     http.fetch(url,callback=handle_response)
-  

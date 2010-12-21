@@ -36,7 +36,6 @@ class NewsWireLive(tornado.web.RequestHandler):
     self.finish()
 
 class ArticleComments(tornado.web.RequestHandler):
-  
   @tornado.web.asynchronous
   def get(self):
     print 'ArticleComments.get'
@@ -57,11 +56,18 @@ class ArticleUpdates(tornado.web.RequestHandler):
   @tornado.web.asynchronous
   def get(self):
     self.get_argument('req_id')
-    article.listen(self.get_argument('req_id'),self.handle_event)
+    article_buffer = article.listen(self.get_argument('req_id'),self.out)
+    if len(article_buffer) > 0:
+      self.out(article_buffer)
+    comment_buffer = comments.listen(self.get_argument('req_id'),self.out)
+    if len(comment_buffer) > 0:
+      self.out(comment_buffer)
   
-  def handle_event(self,data):
-    print 'ArticleUpdates.handle_event'
-    self.write(data)
+  def out(self,data):
+    print 'ArticleUpdates.out'
+    article.stopListening(self.get_argument('req_id'))
+    comments.stopListening(self.get_argument('req_id'))
+    self.write(json.dumps(data,default=pymongo.json_util.default))
     self.finish()
 
 settings = {

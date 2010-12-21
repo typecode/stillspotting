@@ -34,7 +34,7 @@ class Newswire:
     for w in wires:
       out.append(w)
     return out
-    
+  
   
   def make_request(self):
     print 'NewsWire.make_request'
