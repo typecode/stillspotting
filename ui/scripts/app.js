@@ -16,26 +16,6 @@ var app = {
     app.setup_submission_form();
     
     app.viz = tc.viz();
-    
-    //app.Y.io('/newswire/today',
-    //  {on:{
-    //    success:function(transactionId, response, arguments){
-    //      var json, i;
-    //      try{
-    //        json = app.Y.JSON.parse(response.responseText);
-    //        //app.viz.addWireItems(json)
-    //        //app.fire('poller:success',{data:json});
-    //      }catch(error){
-    //        tc.util.log(error);
-    //      }
-    //    }
-    //  }}
-    //);
-    
-    //app.poller = tc.poller({uri:'/newswire/live'});
-    //if(app.poller){
-    //  app.poller.poll();
-    //}
   }
   
   app.setup_submission_form = function(){
@@ -51,7 +31,6 @@ var app = {
               if(json.req_id){
                 app.listen_for_updates(json.req_id);
               }
-              tc.util.dump(json);
             }catch(error){
               tc.util.log(error);
             }
@@ -69,7 +48,6 @@ var app = {
             var json, i;
             try{
               json = app.Y.JSON.parse(response.responseText);
-              tc.util.dump(json);
               if(json.comments){
                 app.viz.renderComments(json.comments)
               }

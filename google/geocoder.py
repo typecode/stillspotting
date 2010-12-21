@@ -66,7 +66,6 @@ class Geocoder:
         'query':item[0],
         'response':json
       }
-      print str(doc)
       self.db.geo.insert(doc)
       item[1](json)
       t = threading.Timer(1.0,self.geocode_remote)
