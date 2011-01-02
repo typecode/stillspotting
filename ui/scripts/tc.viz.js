@@ -31,11 +31,10 @@ tc.viz = function(options){
       this.getPanes().mapPane.appendChild(this.canvas);
     }
     
-    Canvas.prototype.draw = function(force){
+    Canvas.prototype.draw = function(){
       tc.util.log('Canvas.prototype.draw');
       var c, m, p, r, points, x, y, pixels;
       if(!_me.points || !_me.points.length){ return; }
-      //if(!force) return;
       c = this.canvas;
       m = this.map;
       p = this.getProjection();
@@ -44,7 +43,8 @@ tc.viz = function(options){
       
       pixels = _me.points.map(function(d) {
         var xyobj;
-        xyobj = p.fromLatLngToContainerPixel(new google.maps.LatLng(d.lat, d.lng));
+        //xyobj = p.fromLatLngToContainerPixel(new google.maps.LatLng(d.lat, d.lng));
+        xyobj = p.fromLatLngToDivPixel(new google.maps.LatLng(d.lat, d.lng));
         return {x:xyobj.x,y:xyobj.y};
       });
       
@@ -64,11 +64,19 @@ tc.viz = function(options){
           .add(pv.Panel)
             .data(pixels)
           .add(pv.Dot)
-            .lineWidth(0.5)
-            .strokeStyle('rgba(217, 0, 0, .8)')
-            .fillStyle('rgba(217, 0, 0, .5)')
+            .lineWidth(0.0)
+            .def("fillStyle", 'rgba(217, 0, 0, .5)')
             .left(function() pixels[this.parent.index].x)
             .top(function() pixels[this.parent.index].y)
+            .event("mouseover", function(){
+              console.log(this);
+              console.log('over');
+              this.fillStyle('rgba(0, 217, 0, .5)');
+            })
+            .event("mouseout", function(){
+              console.log('out');
+              this.fillStyle(undefined);
+            })
             .size(r)
           .root.render();
     }
@@ -76,17 +84,13 @@ tc.viz = function(options){
     _me.map = new google.maps.Map(document.getElementById("map"),{
       zoom: 3,
       center: new google.maps.LatLng(38, -97),
-      mapTypeId: google.maps.MapTypeId.SATELLITE
+      mapTypeControlOptions:{
+        mapTypeIds: []
+      }
     });
     _me.overlay = new Canvas(_me.map);
-    
-    google.maps.event.addListener(_me.map, 'idle', function() {
-      //_me.overlay.draw();
-    });
-    
-    google.maps.event.addListener(_me.map, 'zoom_changed', function() {
-      //_me.overlay.draw(true);
-    });
+    _me.map.mapTypes.set('TYPE/CODE', tc.mymap.styledMapTypes.base);
+    _me.map.setMapTypeId('TYPE/CODE');
     
     return _me;
   }
