@@ -10,12 +10,21 @@ var app = {
   app.initialize = function(Y){
     tc.util.log('app.initialize');
     app.Y = Y;
+    app.Y.augment(this, Y.EventTarget, null, null, {});
     app.dom = app.Y.one(app.selector);
-    app.setupevents();
     
     app.setup_submission_form();
     
-    app.viz = tc.viz();
+    app.infopane = new tc.infopane(app,{});
+    app.infopane.update('App Status',"starting");
+    
+    app.map = new tc.gmap(app,{});
+    app.viz = new tc.viz(app,{});
+    
+    app.griddr = new tc.griddr(app,{});
+    app.viz.addLayer(app.griddr.getView());
+    
+    app.infopane.update('App Status',"started");
   }
   
   app.setup_submission_form = function(){
@@ -62,28 +71,5 @@ var app = {
           }
         }}
       );
-  }
-  
-  app.setupevents = function(){
-    tc.util.log('app.setupevents');
-    app.Y.augment(app,app.Y.EventTarget);
-    app.on('poller:success',function(e){
-      var i,j;
-      tc.util.dump(e.data);
-      return;
-      for(i in e.data.results){
-        if(e.data.results[i].multimedia){
-          for(j in e.data.results[i].multimedia){
-            if(e.data.results[i].multimedia[j].url){
-              app.dom.append('<img src="'+e.data.results[i].multimedia[j].url+'"></img>');
-            }
-          }
-        }
-        if(e.data.results[i].title){
-          app.dom.append('<p>'+e.data.results[i].title+'</p>');
-        }
-      }
-      app.poller.poll();
-    });
   }
   
