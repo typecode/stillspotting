@@ -10,25 +10,34 @@ tc.griddr.prototype.init = function(app,options){
   
 tc.griddr.prototype.update = function(map){
   tc.util.log('tc.griddr.prototype.update');
-  var bounds, zoom, gridbase, gridcenter;
+  var bounds, zoom, gridbase, gridcenter, i, j;
   center = map.getCenter();
   bounds = map.getBounds();
   zoom = map.getZoom();
   gridbase = 10;
   
-  //console.log(bounds);
-  //console.log(bounds.getNorthEast().lat());
-  //console.log(bounds.getNorthEast().lng());
-  //console.log(bounds.getSouthWest().lat());
-  //console.log(bounds.getSouthWest().lng());
-  //console.log(center);
-  //console.log(rounded_lat+", "+rounded_lng);
-  //console.log(bounds.getNorthEast().lat() - bounds.getSouthWest().lat())
-  //console.log(bounds.getNorthEast().lng() - bounds.getSouthWest().lng())
-  //console.log(zoom);
   
-  gridcenter = new google.maps.LatLng(Math.round(center.lat()/gridbase)*gridbase,Math.round(center.lng()/gridbase)*gridbase);
+  gridcenter = new google.maps.LatLng(
+    Math.round(center.lat()/gridbase)*gridbase,
+    Math.round(center.lng()/gridbase)*gridbase
+  );
   this.grid.center = gridcenter;
+  this.grid.units = [];
+  for(i = -3; i < 3; i++){
+    for(j = -3; j < 3; j++){
+      this.grid.units.push(new google.maps.LatLngBounds(
+          new google.maps.LatLng(
+            gridcenter.lat()-(i*gridbase)-gridbase,
+            gridcenter.lng()-(j*gridbase)-gridbase
+          ),
+          new google.maps.LatLng(
+            gridcenter.lat()-(i*gridbase),
+            gridcenter.lng()-(j*gridbase)
+          )
+        )
+      );
+    }
+  }
   
   app.fire('griddr:grid_updated',this.grid);
   
