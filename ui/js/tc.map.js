@@ -28,7 +28,7 @@ tc.gmap.prototype.setup_events = function(){
   google.maps.event.addListener(this.instance, 'bounds_changed', function(){
     var bounds;
     bounds = _me.instance.getBounds();
-    app.infopane.update('Bounds',bounds.toString());
+    app.infopane.update('Bounds',bounds.toUrlValue(0));
     app.griddr.update(_me.instance);
   });
   

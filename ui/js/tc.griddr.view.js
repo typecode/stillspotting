@@ -11,6 +11,8 @@ tc.griddr.view.prototype.init = function(map){
   this.setMap(this.map);
   this.dom = app.Y.Node.create("<div class='canvas'></div>");
   this.canvas = this.dom._node;
+  this.canvas.style.zIndex = '100';
+  this.grid_data = null;
   this.setup_events();
 }
 
@@ -25,16 +27,19 @@ tc.griddr.view.prototype.setup_events = function(){
   var _me;
   _me = this;
   app.on('griddr:grid_updated',function(d){
-    _me.draw(d);
+    _me.grid_data = d;
+    _me.draw();
   })
 }
   
-tc.griddr.view.prototype.draw = function(d){
+tc.griddr.view.prototype.draw = function(){
   tc.util.log('tc.griddr.view.prototype.draw');
-  var c, m, p, x, y, i, r;
+  console.log(this.grid_data);
+  var c, m, p, d, x, y, i, r;
   c = this.canvas;
   m = app.map;
   p = this.getProjection();
+  d = this.grid_data;
   if(!p){ return; }
   if(!d){ return; }
   
@@ -51,18 +56,29 @@ tc.griddr.view.prototype.draw = function(d){
     y.max = center_y + 10;
   }
   
-  for(i in this.map_overlays){
-    this.map_overlays[i].setMap(null);
-  }
-  this.map_overlays = [];
-  
-  if(d.units){
-    for(i = 0; i < d.units.length; i++){
-      r = new google.maps.Rectangle({
-        bounds:d.units[i]
-      });
-      //r.setMap(m.instance);
-      this.map_overlays.push(r);
+  var show_grid = true;
+  if(show_grid){
+    if(this.map_overlays.length == d.units.length){
+      for(i in this.map_overlays){
+        this.map_overlays[i].setBounds(d.units[i]);
+      }
+    } else {
+      for(i in this.map_overlays){
+        this.map_overlays[i].setMap(null);
+      }
+      this.map_overlays = [];
+      if(d.units){
+        for(i = 0; i < d.units.length; i++){
+          r = new google.maps.Rectangle({
+            bounds:d.units[i],
+            strokeWeight:0.5,
+            strokeOpacity:0.5,
+            fillOpacity:0.0
+          });
+          r.setMap(m.instance);
+          this.map_overlays.push(r);
+        }
+      }
     }
   }
   
