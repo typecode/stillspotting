@@ -19,7 +19,77 @@ tc.griddr.prototype.update = function(map){
   zoom = map.getZoom();
   app.infopane.update('Center', center.toString());
   
-  idealgridwidth = 10;
+  gridsize = null;
+  switch(zoom){
+    case 0:
+      gridsize = 360 / 10;
+      break;
+    case 1:
+      gridsize = 360 / 10;
+      break;
+    case 2:
+      gridsize = 360 / 10;
+      break;
+    case 3:
+      gridsize = 222.36328125 / 10;
+      break;
+    case 4:
+      gridsize = 111.18164062500006 / 10;
+      break;
+    case 5:
+      gridsize = 55.5908203125 / 10;
+      break;
+    case 6:
+      gridsize = 27.79541015625 / 10;
+      break;
+    case 7:
+      gridsize = 13.897705078125 / 10;
+      break;
+    case 8:
+      gridsize = 6.9488525390625 / 10;
+      break;
+    case 9:
+      gridsize = 3.47442626953125 / 10;
+      break;
+    case 10:
+      gridsize = 1.737213134765625 / 10;
+      break;
+    case 11:
+      gridsize = 0.8686065673828125 / 10;
+      break;
+    case 12:
+      gridsize = 0.43430328369140625 / 10;
+      break;
+    case 13:
+      gridsize = 0.21715164184570312 / 10;
+      break;
+    case 14:
+      gridsize = 0.10857582092285156 / 10;
+      break;
+    case 15:
+      gridsize = 0.05428791046142578 / 10;
+      break;
+    case 16:
+      gridsize = 0.02714395523071289 / 10;
+      break;
+    case 17:
+      gridsize = 0.013571977615356445 / 10;
+      break;
+    case 18:
+      gridsize = 0.006785988807678223 / 10;
+      break;
+    case 19:
+      gridsize = 0.0033929944038391113 / 10;
+      break;
+    case 20:
+      gridsize = 0.0016964972019195557 / 10;
+      break;
+  }
+  
+  if(gridsize > 1){
+    gridsize = Math.round(gridsize);
+  }
+
   gridbase = 10;
   
   this.grid.new_zoom = false;
@@ -33,18 +103,39 @@ tc.griddr.prototype.update = function(map){
   
   disp_ne = bounds.getNorthEast();
   disp_sw = bounds.getSouthWest();
-  dim = {
-    width:disp_sw.lng()-disp_ne.lng(),
-    height:disp_sw.lat()-disp_ne.lat()
+  dim = {}
+  dim.width = null;
+  if(zoom <= 3){
+    if(disp_sw.lng() > 0 && disp_ne.lng() > 0){
+      if(disp_sw.lng() > disp_ne.lng()){
+        dim.width = 180 + (180 - disp_sw.lng()) + disp_ne.lng();
+      } else {
+        dim.width = 180 + (180 - disp_ne.lng()) + disp_sw.lng();
+      }
+    } else if(disp_sw.lng() < 0 && disp_ne.lng() < 0){
+      if(disp_sw.lng() < disp_ne.lng()){
+        dim.width = -180 + (-180 - disp_sw.lng()) + disp_ne.lng();
+      } else {
+        dim.width = -180 + (-180 - disp_ne.lng()) + disp_sw.lng();
+      }
+    } else if((disp_sw.lng() < 0 && disp_ne.lng() > 0) ||
+              (disp_sw.lng() > 0 && disp_ne.lng() < 0)){
+                if(disp_sw.lng() < disp_ne.lng()){
+                  dim.width = disp_sw.lng() - disp_ne.lng();
+                } else {
+                  dim.width = (180 - disp_sw.lng()) + (180 + disp_ne.lng());
+                }
+              }
   }
+  if(!dim.width){
+    dim.width = disp_sw.lng()-disp_ne.lng();
+  }
+  dim.height = disp_sw.lat()-disp_ne.lat();
+  
+  
   if(dim.width < 0){ dim.width *= -1; }
   if(dim.height < 0){ dim.height *= -1; }
   app.infopane.update('Dimensions', dim.height + ' x ' + dim.width)
-  
-  gridsize = ((dim.width/idealgridwidth)/gridbase)*gridbase;
-  if(gridsize > 1){
-    gridsize = Math.round(gridsize);
-  }
   
   app.infopane.update('GridSize',gridsize);
   
@@ -74,8 +165,10 @@ tc.griddr.prototype.update = function(map){
   
   this.grid.gridcenter = gridcenter;
   this.grid.units = [];
+  this.grid.unit_ids = [];
   for(i = -grid_dim.height/2; i < grid_dim.height/2; i++){
     for(j = -grid_dim.width/2; j < grid_dim.width/2; j++){
+      
       this.grid.units.push(new google.maps.LatLngBounds(
           new google.maps.LatLng(
             gridcenter.lat()-(i*gridsize)-gridsize,
@@ -87,6 +180,10 @@ tc.griddr.prototype.update = function(map){
           )
         )
       );
+      this.grid.unit_ids.push(
+        this.grid.zoom+'_'+this.grid.units[this.grid.units.length-1].toUrlValue()
+      );
+        
     }
   }
   

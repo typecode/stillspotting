@@ -63,5 +63,8 @@ tc.gmap.tc_styles = {
 }
 
 tc.gmap.styledMapTypes = {
-  base: new google.maps.StyledMapType(tc.gmap.tc_styles.base, {name:'TYPE/CODE'})
+  base: new google.maps.StyledMapType(tc.gmap.tc_styles.base, {
+    name:'TYPE/CODE',
+    minZoom:4
+  })
 }

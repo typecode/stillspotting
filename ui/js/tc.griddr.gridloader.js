@@ -17,14 +17,14 @@ tc.griddr.gridloader.prototype.setup_events = function(){
   var _me;
   _me = this;
   app.on('griddr:grid_updated',function(d){
-    tc.util.log('tc.griddr.gridloader.prototype.setup_events(griddr:grid_updated)');
+    //tc.util.log('tc.griddr.gridloader.prototype.setup_events(griddr:grid_updated)');
     _me.grid_data = d;
     _me.update()
   });
 }
 
 tc.griddr.gridloader.prototype.update = function(){
-  tc.util.log('tc.griddr.gridloader.prototype.update');
+  //tc.util.log('tc.griddr.gridloader.prototype.update');
   var d;
   d = this.grid_data;
   if(d.new_zoom){
@@ -50,7 +50,7 @@ tc.griddr.gridloader.prototype.handle_gridunit = function(grid_unit){
 }
 
 tc.griddr.gridloader.prototype.generate_request = function(grid_id,grid_unit){
-  tc.util.log('tc.griddr.gridloader.prototype.generate_request');
+  //tc.util.log('tc.griddr.gridloader.prototype.generate_request');
   var ne, sw, url, request;
   ne = grid_unit.getNorthEast().toUrlValue();
   sw = grid_unit.getSouthWest().toUrlValue();
@@ -63,7 +63,7 @@ tc.griddr.gridloader.prototype.generate_request = function(grid_id,grid_unit){
 }
 
 tc.griddr.gridloader.prototype.add_request_to_queue = function(request){
-  tc.util.log('tc.griddr.gridloader.prototype.add_request_to_queue');
+  //tc.util.log('tc.griddr.gridloader.prototype.add_request_to_queue');
   this.queued_requests.push(request);
   if(!this.queue_running){
     this.run_queue();
@@ -71,7 +71,7 @@ tc.griddr.gridloader.prototype.add_request_to_queue = function(request){
 }
 
 tc.griddr.gridloader.prototype.run_queue = function(){
-  tc.util.log('tc.griddr.gridloader.prototype.start_queue');
+  tc.util.log('tc.griddr.gridloader.prototype.run_queue');
   var _me;
   _me = this;
   this.queue_running = true;
@@ -83,14 +83,14 @@ tc.griddr.gridloader.prototype.run_queue = function(){
 }
 
 tc.griddr.gridloader.prototype.clear_queue = function(){
-  tc.util.log('tc.griddr.gridloader.prototype.clear_queue');
+  //tc.util.log('tc.griddr.gridloader.prototype.clear_queue');
   this.queued_requests = [];
   app.infopane.update('nItemsGridloaderQueue',this.queued_requests.length);
   this.stop_queue();
 }
 
 tc.griddr.gridloader.prototype.griddata_fetched_handler = function(){
-  tc.util.log('tc.griddr.gridloader.prototype.griddata_fetched_handler');
+  //tc.util.log('tc.griddr.gridloader.prototype.griddata_fetched_handler');
   app.infopane.update('nItemsGridloaderQueue',this.queued_requests.length);
   if(this.queued_requests.length){
     this.request_gridunit_data(this.queued_requests.shift());
@@ -109,7 +109,7 @@ tc.griddr.gridloader.prototype.stop_queue = function(){
 }
 
 tc.griddr.gridloader.prototype.request_gridunit_data = function(request){
-  tc.util.log('tc.griddr.gridloader.prototype.generate_request');
+  //tc.util.log('tc.griddr.gridloader.prototype.generate_request');
   var _me, cached_data;
   _me = this;
   cached_data = this.cached_gridunit_data[request.grid_id];
@@ -140,4 +140,5 @@ tc.griddr.gridloader.prototype.request_gridunit_data = function(request){
 tc.griddr.gridloader.prototype.handle_gridunit_data = function(grid_id,d){
   //tc.util.log('tc.griddr.gridloader.prototype.handle_gridunit_data');
   this.cached_gridunit_data[grid_id] = d;
+  app.fire('gridloader:gridunit_loaded',{grid_id:grid_id});
 }

@@ -10,11 +10,22 @@ import json
 import pymongo
 import pymongo.json_util
 
+database = pymongo.Connection('localhost', 27017).tc.geoitems
+#database.ensureIndex( { 'loc' : "2d" } )
+
 class bounds(tornado.web.RequestHandler):
   @tornado.web.asynchronous
   def get(self,ne,sw):
-    print 'views.geoitem.bounds.get'
-    print ne
-    print sw
-    self.write(json.dumps({},default=pymongo.json_util.default))
+    _ne = ne.split(',')
+    _ne[0] = float(_ne[0])
+    _ne[1] = float(_ne[1])
+    _sw = sw.split(',')
+    _sw[0] = float(_sw[0])
+    _sw[1] = float(_sw[1])
+    
+    results = database.find({'loc':{"$within" : {"$box" : [_sw,_ne]}}})
+    out = []
+    for r in results:
+      out.append(r)
+    self.write(json.dumps(out,default=pymongo.json_util.default))
     self.finish()

@@ -5,8 +5,9 @@ tc.gmap = makeClass();
 tc.gmap.prototype.init = function(app,options){
   tc.util.log('tc.gmap.prototype.initialize');
   this.instance = new google.maps.Map(document.getElementById("map"),{
-    zoom: 3,
+    zoom: 4,
     center: new google.maps.LatLng(38, -97),
+    scrollwheel:false,
     mapTypeControlOptions:{
       mapTypeIds: []
     }

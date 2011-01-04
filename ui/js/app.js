@@ -13,7 +13,7 @@ var app = {
     app.Y.augment(this, Y.EventTarget, null, null, {});
     app.dom = app.Y.one(app.selector);
     
-    app.setup_submission_form();
+    //app.setup_submission_form();
     
     app.infopane = new tc.infopane(app,{});
     app.infopane.update('App Status',"starting");
