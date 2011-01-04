@@ -24,6 +24,8 @@ var app = {
     app.griddr = new tc.griddr(app,{});
     app.viz.addLayer(app.griddr.getView());
     
+    app.loader = new tc.griddr.gridloader(app,{});
+    
     app.infopane.update('App Status',"started");
   }
   

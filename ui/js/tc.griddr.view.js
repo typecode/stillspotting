@@ -1,7 +1,6 @@
 if(!tc){ var tc = {}; }
 
 tc.griddr.view = makeClass();
-//tc.griddr.view.prototype = new tc.viz.canvas();
 tc.griddr.view.prototype = pv.extend(google.maps.OverlayView);
 
 tc.griddr.view.prototype.init = function(map){
@@ -18,7 +17,6 @@ tc.griddr.view.prototype.init = function(map){
 
 tc.griddr.view.prototype.onAdd = function(){
   tc.util.log('tc.griddr.view.prototype.onAdd');
-  //this.getPanes().mapPane.appendChild(this.canvas);
   this.getPanes().overlayLayer.appendChild(this.canvas);
 }
 
@@ -27,6 +25,7 @@ tc.griddr.view.prototype.setup_events = function(){
   var _me;
   _me = this;
   app.on('griddr:grid_updated',function(d){
+    tc.util.log('tc.griddr.view.prototype.setup_events(griddr:grid_updated)');
     _me.grid_data = d;
     _me.draw();
   })
@@ -34,12 +33,14 @@ tc.griddr.view.prototype.setup_events = function(){
   
 tc.griddr.view.prototype.draw = function(){
   tc.util.log('tc.griddr.view.prototype.draw');
-  console.log(this.grid_data);
-  var c, m, p, d, x, y, i, r;
+  var c, m, p, d, x, y, i, r,
+    show_grid, show_gridcenter;
   c = this.canvas;
   m = app.map;
   p = this.getProjection();
   d = this.grid_data;
+  show_grid = true;
+  show_gridcenter = true;
   if(!p){ return; }
   if(!d){ return; }
   
@@ -47,7 +48,15 @@ tc.griddr.view.prototype.draw = function(){
   y = {};
   
   if(d.center){
-    xyobj = p.fromLatLngToDivPixel(d.center);
+    //draw center here
+  }
+  
+  if(!d.new_gridcenter){
+    return;
+  }
+  
+  if(d.gridcenter){
+    xyobj = p.fromLatLngToDivPixel(d.gridcenter);
     center_x = xyobj.x;
     x.min = center_x - 10;
     x.max = center_x + 10;
@@ -56,7 +65,6 @@ tc.griddr.view.prototype.draw = function(){
     y.max = center_y + 10;
   }
   
-  var show_grid = true;
   if(show_grid){
     if(this.map_overlays.length == d.units.length){
       for(i in this.map_overlays){
@@ -82,29 +90,24 @@ tc.griddr.view.prototype.draw = function(){
     }
   }
   
-  c.style.width = (x.max - x.min) + "px";
-  c.style.height = (y.max - y.min) + "px";
-  c.style.left = x.min + "px";
-  c.style.top = y.min + 'px';
+  if(show_gridcenter){
+    c.style.width = (x.max - x.min) + "px";
+    c.style.height = (y.max - y.min) + "px";
+    c.style.left = x.min + "px";
+    c.style.top = y.min + 'px';
   
-  new pv.Panel()
-    .canvas(c)
-    .left(0)
-    .top(0)
-      .add(pv.Panel)
-        .add(pv.Dot)
-          .lineWidth(0.0)
-          .def("fillStyle", 'rgba(217, 0, 0, .5)')
-          .left(center_x - x.min)
-          .top(center_y - y.min)
-          .size(10)
-        .root.render();
-}
-
-tc.griddr.view.prototype.replot = function(d){
-  var p, c, center_x, center_y;
-  p = this.getProjection();
-  if(!p){ return; }
-  c = this.canvas;
+    new pv.Panel()
+      .canvas(c)
+      .left(0)
+      .top(0)
+        .add(pv.Panel)
+          .add(pv.Dot)
+            .lineWidth(0.0)
+            .def("fillStyle", 'rgba(217, 0, 0, .5)')
+            .left(center_x - x.min)
+            .top(center_y - y.min)
+            .size(10)
+          .root.render();
+  }
   
 }

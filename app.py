@@ -11,6 +11,7 @@ import tornado.web
 
 import views.article
 import views.newswire
+import views.geoitem
 
 settings = {
   "static_path": os.path.join(os.path.dirname(__file__), "ui")
@@ -21,6 +22,7 @@ application = tornado.web.Application([
   (r"/article/updates", views.article.updates),
   (r"/newswire/today", views.newswire.today),
   (r"/newswire/live", views.newswire.live),
+  (r"/geoitem/bounds/(.*)/(.*)/", views.geoitem.bounds)
 ],**settings)
 
 if __name__ == "__main__":
