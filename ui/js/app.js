@@ -22,7 +22,7 @@ var app = {
     app.viz = new tc.viz(app,{});
     
     app.griddr = new tc.griddr(app,{});
-    app.viz.addLayer(app.griddr.getView());
+    //app.viz.addLayer(app.griddr.getView());
     
     app.loader = new tc.griddr.gridloader(app,{});
     
