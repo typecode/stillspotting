@@ -140,5 +140,5 @@ tc.griddr.gridloader.prototype.request_gridunit_data = function(request){
 tc.griddr.gridloader.prototype.handle_gridunit_data = function(grid_id,d){
   //tc.util.log('tc.griddr.gridloader.prototype.handle_gridunit_data');
   this.cached_gridunit_data[grid_id] = d;
-  app.fire('gridloader:gridunit_loaded',{grid_id:grid_id});
+  app.fire('gridloader:gridunit_loaded',{grid_id:grid_id, gridunit_data:d});
 }
