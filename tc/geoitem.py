@@ -7,7 +7,7 @@ import tornado.httpclient
 import pymongo
 
 database = pymongo.Connection('localhost', 27017).tc.geoitems
-database.ensureIndex( { loc : "2d" } )
+#database.ensureIndex( { 'loc' : "2d" } )
 
 class geoitem:
 

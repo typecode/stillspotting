@@ -24,8 +24,11 @@ class bounds(tornado.web.RequestHandler):
     _sw[1] = float(_sw[1])
     
     results = database.find({'loc':{"$within" : {"$box" : [_sw,_ne]}}})
-    out = []
+    out = {
+      'bounds':[_ne[0],_ne[1],_sw[0],_sw[1]],
+      'points':[]
+    }
     for r in results:
-      out.append(r)
+      out['points'].append(r)
     self.write(json.dumps(out,default=pymongo.json_util.default))
     self.finish()
