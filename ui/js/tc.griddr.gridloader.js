@@ -39,25 +39,26 @@ tc.griddr.gridloader.prototype.update = function(){
 
 tc.griddr.gridloader.prototype.handle_gridunit = function(grid_unit){
   //tc.util.log('tc.griddr.gridloader.prototype.handle_gridunit');
-  var cached_data, grid_id;
-  grid_id = this.grid_data.zoom+'_'+grid_unit.toUrlValue();
-  cached_data = this.cached_gridunit_data[grid_id];
+  var cached_data, unit_id;
+  unit_id = this.grid_data.zoom+','+grid_unit.toUrlValue();
+  cached_data = this.cached_gridunit_data[unit_id];
   if(cached_data){
-    this.handle_gridunit_data(grid_id,cached_data);
+    this.handle_gridunit_data(unit_id,cached_data);
   } else {
-    this.add_request_to_queue(this.generate_request(grid_id,grid_unit));
+    this.add_request_to_queue(this.generate_request(unit_id,grid_unit));
   }
 }
 
-tc.griddr.gridloader.prototype.generate_request = function(grid_id,grid_unit){
+tc.griddr.gridloader.prototype.generate_request = function(unit_id,grid_unit){
   //tc.util.log('tc.griddr.gridloader.prototype.generate_request');
   var ne, sw, url, request;
+  zoom = this.grid_data.zoom;
   ne = grid_unit.getNorthEast().toUrlValue();
   sw = grid_unit.getSouthWest().toUrlValue();
-  url = '/geoitem/bounds/'+ne+'/'+sw+'/';
+  url = '/geoitem/bounds/'+zoom+'/'+ne+'/'+sw+'/';
   request = {
     url:url,
-    grid_id:grid_id
+    unit_id:unit_id
   }
   return request;
 }
@@ -77,7 +78,7 @@ tc.griddr.gridloader.prototype.run_queue = function(){
   this.queue_running = true;
   app.infopane.update('nItemsGridloaderQueue',this.queued_requests.length);
   this.request_gridunit_data(this.queued_requests.shift());
-  this.grid_data_fetched_observer = app.Y.on('gridloader:griddata_fetched',function(){
+  this.grid_data_fetched_observer = app.on('gridloader:griddata_fetched',function(){
     _me.griddata_fetched_handler();
   });
 }
@@ -112,10 +113,10 @@ tc.griddr.gridloader.prototype.request_gridunit_data = function(request){
   //tc.util.log('tc.griddr.gridloader.prototype.generate_request');
   var _me, cached_data;
   _me = this;
-  cached_data = this.cached_gridunit_data[request.grid_id];
+  cached_data = this.cached_gridunit_data[request.unit_id];
   if(cached_data){
-    this.handle_gridunit_data(request.grid_id,cached_data);
-    app.Y.fire('gridloader:griddata_fetched');
+    this.handle_gridunit_data(request.unit_id,cached_data);
+    app.fire('gridloader:griddata_fetched');
     return;
   }
   app.Y.io(request.url,
@@ -126,19 +127,19 @@ tc.griddr.gridloader.prototype.request_gridunit_data = function(request){
           try{
             json = app.Y.JSON.parse(response.responseText);
           } catch(e){ tc.util.log(e); }
-          app.Y.fire('gridloader:griddata_fetched');
-          _me.handle_gridunit_data(request.grid_id,json);
+          app.fire('gridloader:griddata_fetched');
+          _me.handle_gridunit_data(request.unit_id,json);
         },
         failure:function(){
-          app.Y.fire('gridloader:griddata_fetched');
+          app.fire('gridloader:griddata_fetched');
         }
       }
     }
   );
 }
 
-tc.griddr.gridloader.prototype.handle_gridunit_data = function(grid_id,d){
+tc.griddr.gridloader.prototype.handle_gridunit_data = function(unit_id,d){
   //tc.util.log('tc.griddr.gridloader.prototype.handle_gridunit_data');
-  this.cached_gridunit_data[grid_id] = d;
-  app.fire('gridloader:gridunit_loaded',{grid_id:grid_id, gridunit_data:d});
+  this.cached_gridunit_data[unit_id] = d;
+  app.fire('gridloader:gridunit_loaded',{unit_id:unit_id, gridunit_data:d});
 }

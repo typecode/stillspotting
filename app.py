@@ -22,7 +22,7 @@ application = tornado.web.Application([
   (r"/article/updates", views.article.updates),
   (r"/newswire/today", views.newswire.today),
   (r"/newswire/live", views.newswire.live),
-  (r"/geoitem/bounds/(.*)/(.*)/", views.geoitem.bounds)
+  (r"/geoitem/bounds/(.*)/(.*)/(.*)/", views.geoitem.bounds)
 ],**settings)
 
 if __name__ == "__main__":

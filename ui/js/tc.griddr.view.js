@@ -32,8 +32,8 @@ tc.griddr.view.prototype.setup_events = function(){
   });
   app.on('gridloader:gridunit_loaded',function(d){
     tc.util.log('tc.griddr.view.prototype.setup_events(gridloader:gridunit_loaded)');
-    if(_me.map_overlays_by_key[d.grid_id]){
-      _me.map_overlays_by_key[d.grid_id].setOptions({
+    if(_me.map_overlays_by_key[d.unit_id]){
+      _me.map_overlays_by_key[d.unit_id].setOptions({
         fillColor:"#FF0000",
         fillOpacity:0.2
       });
@@ -98,7 +98,6 @@ tc.griddr.view.prototype.draw = function(){
             fillOpacity:0.0
           });
           r.setMap(m.instance);
-          console.log(d.unit_ids[i]);
           this.map_overlays_by_key[d.unit_ids[i]] = r;
           this.map_overlays.push(r);
         }

@@ -8,6 +8,17 @@ tc.griddr.prototype.init = function(app,options){
   this.last_zoom = null;
   this.last_center = null;
   this.view = null;
+  this.setup_events();
+}
+
+tc.griddr.prototype.setup_events = function(map){
+  tc.util.log('tc.griddr.prototype.setup_events');
+  var _me;
+  _me = this;
+  app.on('map:zoom_changed',function(d){
+    tc.util.log('tc.griddr.prototype.setup_events(map:zoom)');
+    _me.update(d);
+  });
 }
   
 tc.griddr.prototype.update = function(map){
@@ -161,6 +172,9 @@ tc.griddr.prototype.update = function(map){
   }
   if(grid_dim.width%2){ grid_dim.width += 1; }
   if(grid_dim.height%2){ grid_dim.height += 1; }
+  //
+  grid_dim = {width:2,height:2};
+  //
   app.infopane.update('GridDimensions', grid_dim.height + ' x ' + grid_dim.width)
   
   this.grid.gridcenter = gridcenter;
@@ -181,7 +195,7 @@ tc.griddr.prototype.update = function(map){
         )
       );
       this.grid.unit_ids.push(
-        this.grid.zoom+'_'+this.grid.units[this.grid.units.length-1].toUrlValue()
+        this.grid.zoom+','+this.grid.units[this.grid.units.length-1].toUrlValue()
       );
         
     }

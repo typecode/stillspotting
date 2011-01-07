@@ -26,6 +26,8 @@ var app = {
     
     app.loader = new tc.griddr.gridloader(app,{});
     
+    app.gridmanager = new tc.griddr.gridmanager(app,{});
+
     //app.viz.addLayer(new tc.geoitem.view(app.map.instance));
     
     app.infopane.update('App Status',"started");

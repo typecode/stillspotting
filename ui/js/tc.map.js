@@ -35,7 +35,10 @@ tc.gmap.prototype.setup_events = function(){
   
   google.maps.event.addListener(this.instance, 'zoom_changed', function(){
     app.infopane.update('Zoom',_me.instance.getZoom());
-    app.griddr.update(_me.instance);
+    //app.fire('map:zoom_changed');
+    if(app.gridmanager){
+      app.gridmanager.clear_units();
+    }
   });
   
   app.infopane.update('Zoom',this.instance.getZoom());
