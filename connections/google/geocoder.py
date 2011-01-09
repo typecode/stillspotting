@@ -14,8 +14,13 @@ class Geocoder:
   remote_stopped = True
   request_timer = None
   
-  def __init__(self):
-    print 'Geocoder()'
+  def __init__(self,settings={}):
+    print 'google.Geocoder()___________________________________________________________'
+    print ' | google.Geocoder Connection Starting'
+    print ' | google.Geocoder Connection Settings:'
+    print ' |  '+str(settings)
+    print ' |__________________________________________________________________'
+    print ''
     self.mongo_conn = pymongo.Connection('localhost', 27017)
     self.db = self.mongo_conn['google']
     

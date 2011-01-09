@@ -4,9 +4,9 @@ import math
 import hashlib
 import datetime
 
-import nyt.newswire
-import nyt.article
-import nyt.comments
+import connections.nyt.newswire
+import connections.nyt.article
+import connections.nyt.comments
 
 sys.path.append("lib")
 import tornado.httpclient
@@ -15,8 +15,12 @@ import pymongo
 import pymongo.json_util
 
 class comments(tornado.web.RequestHandler):
-  nytarticle = nyt.article.Article()
-  nytcomments = nyt.comments.Comments()
+  nytarticle = connections.nyt.article.Article({
+    'api_key':'6b386fbb1141bc111298f599fe611bab:1:49052537'
+  })
+  nytcomments = connections.nyt.comments.Comments({
+    'api_key':'3cd7b97dd0c16c8523ea7ccba7f5fdd1:13:49052537'
+  })
   @tornado.web.asynchronous
   def get(self):
     print 'views.article.comments.get'
@@ -33,8 +37,12 @@ class comments(tornado.web.RequestHandler):
     print str(article_data)
     
 class updates(tornado.web.RequestHandler):
-  nytarticle = nyt.article.Article()
-  nytcomments = nyt.comments.Comments()
+  nytarticle = connections.nyt.article.Article({
+    'api_key':'6b386fbb1141bc111298f599fe611bab:1:49052537'
+  })
+  nytcomments = connections.nyt.comments.Comments({
+    'api_key':'3cd7b97dd0c16c8523ea7ccba7f5fdd1:13:49052537'
+  })
   @tornado.web.asynchronous
   def get(self):
     self.get_argument('req_id')

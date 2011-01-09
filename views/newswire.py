@@ -4,9 +4,9 @@ import math
 import hashlib
 import datetime
 
-import nyt.newswire
-import nyt.article
-import nyt.comments
+import connections.nyt.newswire
+import connections.nyt.article
+import connections.nyt.comments
 
 sys.path.append("lib")
 import tornado.httpclient

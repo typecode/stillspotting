@@ -3,21 +3,32 @@ import sys
 import time
 import json
 
+import connections.connection
+
 sys.path.append("lib")
 import tornado.httpclient
 import pymongo
 
-newswire_api_key = 'a03dbd6f46b771a78288ba7df573d250:13:49052537'
-
-class Newswire:
+class Newswire(connections.connection.Connection):
   
   watchers = []
   
   timer = None
   last_offset = 0
   
-  def __init__(self):
-    print 'NewsWire()'
+  def __init__(self,settings):
+    print 'nyt.NewsWire()___________________________________________________________'
+    if 'api_key' not in settings:
+      print ' | NewsWire Missing Setting: api_key'
+      print ' |____________________________________________________________________'
+      return
+    print ' | nyt.NewsWire Connection Starting'
+    print ' |'
+    print ' | nyt.NewsWire Connection Settings:'
+    print ' |  '+str(settings)
+    print ' |___________________________________________________________________'
+    print ''
+    self.api_key = settings['api_key']
     self.mongo_conn = pymongo.Connection('localhost', 27017)
     self.db = self.mongo_conn['nyt']
   
@@ -39,7 +50,7 @@ class Newswire:
   def make_request(self):
     print 'NewsWire.make_request'
     http = tornado.httpclient.AsyncHTTPClient()
-    url = "http://api.nytimes.com/svc/news/v3/content/nyt/all?api-key="+newswire_api_key
+    url = "http://api.nytimes.com/svc/news/v3/content/nyt/all?api-key="+api_key
     http.fetch(url,callback=self.on_response)
   
   def on_response(self,response):

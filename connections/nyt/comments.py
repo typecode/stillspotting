@@ -2,22 +2,63 @@ import sys
 import urllib
 import math
 
-import google.geocoder
+import connections.google.geocoder
+import connections.connection
 
 sys.path.append("lib")
 import tornado.httpclient
 
-class Comments:
+class Comments(connections.connection.Connection):
   
-  comments_api_key = '3cd7b97dd0c16c8523ea7ccba7f5fdd1:13:49052537'
-  geocoder = google.geocoder.Geocoder()
+  geocoder = connections.google.geocoder.Geocoder()
   
   listeners = {}
+  
   buffers = {}
   
-  def __init__(self):
-    print 'Comments()'
+  default_pars = {
+    'url':'http://www.nytimes.com/2010/12/03/opinion/03krugman.html',
+    'offset':str(0)
+  }
+  
+  def __init__(self,settings):
+    self.settings = settings
+    self.api_key = settings['api_key']
+    print str(self)
+  
+  def __repr__(self):
+      return 'connections.nyt.comments.Comments()______________________________________\n\r\
+ | connections.nyt.comments.Comments Starting\n\r\
+ |   Connects to NYT Comments API.\n\r\
+ |\n\r\
+ | connections.nyt.comments.Comments Settings:\n\r\
+ |  '+str(self.settings)+'\n\r\
+ |__________________________________________________________________\n\r'
     
+  def process_request(self,req_id,pars={}):
+    print 'connections.nyt.comments.Comments.process_request'
+    http = tornado.httpclient.AsyncHTTPClient()
+    
+    for i in self.default_pars:
+      if i not in pars:
+        pars[i] = self.default_pars[i]
+    
+    pars['api-key'] = self.api_key
+    
+    url = 'http://api.nytimes.com/svc/community/v2/comments/url/exact-match.json?'
+    url = url + urllib.urlencode(pars)
+    
+    def handle_response(response):
+      try:
+        json = tornado.escape.json_decode(response.body)
+      except TypeError, ValueError:
+        self.emit_api_response(req_id,[response.body])
+        return
+      self.emit_api_response(req_id,json)
+      
+    http.fetch(url,callback=handle_response)
+  
+  #DEPRECATED
   def getCommentsForUrl(self,req_id,query_url):
     print 'Comments.getCommentsForUrl'
     http = tornado.httpclient.AsyncHTTPClient()
@@ -28,7 +69,7 @@ class Comments:
       pars = {
         'url':query_url,
         'offset':str(offset),
-        'api-key':self.comments_api_key
+        'api-key':self.api_key
       }
       url = 'http://api.nytimes.com/svc/community/v2/comments/url/exact-match.json?'
       url = url + urllib.urlencode(pars)
@@ -51,7 +92,8 @@ class Comments:
       if len(requests) > 0:
         http.fetch(requests.pop(0),callback=handle_subsequent_response)
     http.fetch(generate_url(0),callback=handle_initial_response)
-        
+  
+  #DEPRECATED     
   def geocode_comment(self,req_id,comment):
     print 'Comments.geocodeComment'
     def comment_geocoded(latlng):
@@ -60,6 +102,7 @@ class Comments:
       self.emit(req_id,comment)
     self.geocoder.add_to_queue(comment[u'location'],comment_geocoded)
   
+  #DEPRECATED
   def listen(self,req_id,callback):
     print 'Comments.listen'
     if req_id in self.buffers and self.buffers[req_id] is not None:
@@ -67,7 +110,8 @@ class Comments:
         return {'comments':self.buffers[req_id]}
     self.listeners[req_id] = callback
     return []
-      
+  
+  #DEPRECATED
   def emit(self,req_id,data):
     print 'Comments.emit'
     if req_id in self.listeners and self.listeners[req_id] is not None:
@@ -76,7 +120,8 @@ class Comments:
       self.listeners[req_id]({'comments':data})
     elif req_id in self.buffers and self.buffers[req_id] is not None:
       self.buffers[req_id].append(data)
-      
+  
+  #DEPRECATED
   def stopListening(self,req_id):
     print 'Comments.stopListening'
     if req_id in self.listeners:
