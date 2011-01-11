@@ -22,11 +22,19 @@ import views.article
 import views.newswire
 import views.geoitem
 
+print '\n\r\n\r\n\r\n\r\n\r\n\r'
+print '========================================================================='
+print ''
+print 'StillSpotting'
+print 'By SIDL'
+print ''
+print 'starting..........................'
 print ''
 print ''
 
 print 'StillSpotting: Opening MongoDB Connection'
 database = pymongo.Connection('localhost', 27017)
+print ''
 
 print 'StillSpotting: Starting Connections'
 print ''
