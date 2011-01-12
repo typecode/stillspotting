@@ -1,7 +1,10 @@
 
-body{ height:100%;width:100%; position:relative; }
+body{ height:100%;width:100%; position:relative; background-color:#ebf0d6; }
 
-#app{ height:100%;width:100%; }
+::-moz-selection{ background: #40909C; color:#fff; text-shadow: none; }
+::selection { background:#40909C; color:#fff; text-shadow: none; }
+
+#app{ height:100%;width:100%; color:#193451; }
 
 #query{
   position:absolute;
@@ -43,3 +46,75 @@ body{ height:100%;width:100%; position:relative; }
 }
 
 #map .canvas{ position:absolute; }
+
+.api-info{
+  font-size:12px;
+  text-align:left;
+  background-color:white;
+  display:block;
+  float:left;
+  width:35%;
+  margin:1% 0% 1% 0%;
+  padding:10px;
+}
+
+.api-results{
+  font-size:12px;
+  text-align:left;
+  background-color:white;
+  display:block;
+  clear:both;
+  float:left;
+  width:82%;
+  margin:1%;
+  padding:10px;
+}
+
+form.api-form{
+  float:left;
+  font-size:12px;
+  text-align:left;
+  background-color:white;
+  display:block;
+  width:45%;
+  margin:1% 1% 0% 1%;
+  padding:10px;
+}
+
+form.api-form table{
+  width:100%;
+}
+
+form.api-form table tr{
+  
+}
+
+form.api-form table tr th,
+form.api-form table tr td{
+  padding-bottom:10px;
+}
+
+form.api-form table tr th{
+  vertical-align:top;
+  text-align:left;
+}
+
+form.api-form table tr td{
+  vertical-align:top;
+  text-align:right;
+}
+
+form.api-form table tr td textarea,
+form.api-form table tr td select{
+  width:100%;
+}
+
+form.api-form table tr td input{margin:5px;}
+
+form.api-form table tr td textarea{ width:300px; }
+
+form.api-form table tr td.codemirror{ border:1px solid #ebf0d6; }
+
+form.api-form table tr td select{
+  padding:2px;
+}

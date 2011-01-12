@@ -7,7 +7,7 @@ var app = {
     version:0.1
   }
   
-  app.initialize = function(Y){
+  app.initialize = function(Y,options){
     tc.util.log('app.initialize');
     app.Y = Y;
     app.Y.augment(this, Y.EventTarget, null, null, {});
@@ -18,17 +18,28 @@ var app = {
     app.infopane = new tc.infopane(app,{});
     app.infopane.update('App Status',"starting");
     
-    app.map = new tc.gmap(app,{});
-    app.viz = new tc.viz(app,{});
     
-    app.griddr = new tc.griddr(app,{});
-    //app.viz.addLayer(app.griddr.getView());
-    
-    app.loader = new tc.griddr.gridloader(app,{});
-    
-    app.gridmanager = new tc.griddr.gridmanager(app,{});
-
-    //app.viz.addLayer(new tc.geoitem.view(app.map.instance));
+    switch(options.view){
+      case 'api':
+        app.api = new tc.api(app,{});
+        app.api.form = new tc.api.form(app,{});
+        app.api.info = new tc.api.info(app,{});
+        app.api.loader = new tc.api.loader(app,{});
+        app.api.results = new tc.api.results(app,{});
+        break;
+      case 'map':
+        app.map = new tc.gmap(app,{});
+        app.viz = new tc.viz(app,{});
+        app.griddr = new tc.griddr(app,{});
+        app.loader = new tc.griddr.gridloader(app,{});
+        app.gridmanager = new tc.griddr.gridmanager(app,{});
+        //app.viz.addLayer(app.griddr.getView());
+        //app.viz.addLayer(new tc.geoitem.view(app.map.instance));
+        break;
+      default:
+        app.viewswitcher = new tc.viewswitcher(app,{});
+        break;
+    }
     
     app.infopane.update('App Status',"started");
   }

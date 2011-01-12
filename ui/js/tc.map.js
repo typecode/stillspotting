@@ -4,6 +4,10 @@ tc.gmap = makeClass();
 
 tc.gmap.prototype.init = function(app,options){
   tc.util.log('tc.gmap.prototype.initialize');
+  
+  this.dom = app.Y.Node.create('<div id="map"></div>');
+  app.dom.append(this.dom);
+  
   this.instance = new google.maps.Map(document.getElementById("map"),{
     zoom: 4,
     center: new google.maps.LatLng(38, -97),

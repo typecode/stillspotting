@@ -22,12 +22,12 @@ class Article(connections.connection.Connection):
   
   def __repr__(self):
       return 'connections.nyt.article.Article()______________________________________\n\r\
-| connections.nyt.article.Article Starting\n\r\
-|   Connects to NYT Article API.\n\r\
-|\n\r\
-| connections.nyt.article.Article Settings:\n\r\
-|  '+str(self.settings)+'\n\r\
-|__________________________________________________________________\n\r'
+ | connections.nyt.article.Article Starting\n\r\
+ |   Connects to NYT Article API.\n\r\
+ |\n\r\
+ | connections.nyt.article.Article Settings:\n\r\
+ |  '+str(self.settings)+'\n\r\
+ |__________________________________________________________________\n\r'
   
   def process_request(self,req_id,pars):
     print 'connections.nyt.article.Article.process_request'

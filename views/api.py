@@ -22,17 +22,17 @@ class api(tornado.web.RequestHandler):
     self.connections = connections
     
   @tornado.web.asynchronous
-  def get(self,api):
-    print '-views.api.api.get'
+  def post(self,api):
+    print '-views.api.api.post'
     print ' |api: '+str(api)
     if not api or api not in self.connections:
       raise tornado.web.HTTPError(404)
     self.api = api
     random.seed(time.clock())
     self.request_id = "".join([random.choice(string.letters+string.digits) for x in xrange(32)])
-    self.pars = self.get_argument('pars',{})
+    self.pars = tornado.escape.json_decode(self.request.body)
     print ' |self.request_id: '+str(self.request_id)
-    print ' |self.request_pars: '+str(self.pars)
+    print ' |self.query_parameters: '+str(self.pars)
     output_buffer = self.connections[self.api].make_api_request(self.request_id,self.out,self.pars)
     if len(output_buffer) > 0:
       self.out(output_buffer)
