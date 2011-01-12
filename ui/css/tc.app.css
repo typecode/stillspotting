@@ -91,7 +91,7 @@ form.api-form table tr{
 
 form.api-form table tr th,
 form.api-form table tr td{
-  padding-bottom:10px;
+  padding-bottom:5px;
 }
 
 form.api-form table tr th{
@@ -102,6 +102,14 @@ form.api-form table tr th{
 form.api-form table tr td{
   vertical-align:top;
   text-align:right;
+}
+
+form.api-form table tr td p.okay{
+  color:green;
+}
+
+form.api-form table tr td p.error{
+  color:red;
 }
 
 form.api-form table tr td textarea,

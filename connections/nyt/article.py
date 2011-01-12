@@ -9,25 +9,18 @@ import tornado.httpclient
 
 class Article(connections.connection.Connection):
   
-  listeners = {}
+#### START CONNECTION-SPECIFIC MEMBERS
+  name = 'NYT Article API Connection'
+  description = 'Connects to NYT Article API.'
   default_pars = {
-    'query':'',
-    'facets':'geo_facet'
+    'query':{'accepted':'text string','default':''},
+    'facets':{'accepted':'facets','default':None}
   }
+#### END CONNECTION-SPECIFIC MEMBERS
   
   def __init__(self,settings):
     self.settings = settings
-    self.api_key = self.settings['api_key']
     print str(self)
-  
-  def __repr__(self):
-      return 'connections.nyt.article.Article()______________________________________\n\r\
- | connections.nyt.article.Article Starting\n\r\
- |   Connects to NYT Article API.\n\r\
- |\n\r\
- | connections.nyt.article.Article Settings:\n\r\
- |  '+str(self.settings)+'\n\r\
- |__________________________________________________________________\n\r'
   
   def process_request(self,req_id,pars):
     print 'connections.nyt.article.Article.process_request'
@@ -37,7 +30,7 @@ class Article(connections.connection.Connection):
       if i not in pars:
         pars[i] = self.default_pars[i]
     
-    pars['api-key'] = self.api_key
+    pars['api-key'] = self.settings['api_key']
     
     url = 'http://api.nytimes.com/svc/search/v1/article?'
     url = url + urllib.urlencode(pars)
@@ -51,6 +44,9 @@ class Article(connections.connection.Connection):
         self.emit_api_response(req_id,[response.body])
       
     http.fetch(url,callback=handle_response)
+  
+  
+  
   
   
   #DEPRECATED

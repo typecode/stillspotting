@@ -2,27 +2,42 @@ import sys
 import urllib
 import threading
 
+import connections.connection
+
 sys.path.append("lib")
 import tornado.httpclient
 import pymongo
 
-class Geocoder:
+class Geocoder(connections.connection.Connection):
+  
+#### START CONNECTION-SPECIFIC MEMBERS
+  name = 'Google Reverse Geocoder'
+  description = 'Connects to Google Reverse Geocoder API.'
+  default_pars = {
+    'location':{'accepted':'string formatted location','default':'Alphabet City, New York'}
+  }
+#### END CONNECTION-SPECIFIC MEMBERS
+  
+  def process_request(self,req_id,pars):
+    print 'connections.google.geocoder.Geocoder.process_request'
+    
+    for i in self.default_pars:
+      if i not in pars:
+        pars[i] = self.default_pars[i]
+    
+    def handle_response(response):
+      self.emit_api_response(req_id,response)
+    
+    self.add_to_queue(pars['location'],handle_response)
+  
   
   local_queue = []
   local_stopped = True
   remote_queue = []
   remote_stopped = True
   request_timer = None
-  
-  def __init__(self,settings={}):
-    print 'google.Geocoder()___________________________________________________________'
-    print ' | google.Geocoder Connection Starting'
-    print ' | google.Geocoder Connection Settings:'
-    print ' |  '+str(settings)
-    print ' |__________________________________________________________________'
-    print ''
-    self.mongo_conn = pymongo.Connection('localhost', 27017)
-    self.db = self.mongo_conn['google']
+  mongo_conn = pymongo.Connection('localhost', 27017)
+  db = mongo_conn['google']
     
   def add_to_queue(self,string,callback):
     print 'Geocoder.add_to_queue'

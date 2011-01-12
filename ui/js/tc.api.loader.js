@@ -19,6 +19,7 @@ tc.api.loader.prototype.setup_events = function(){
 
 tc.api.loader.prototype.execute_query = function(data){
   tc.util.log('tc.api.loader.prototype.execute_query');
+  app.fire('api-loader:api-query-started');
   var _me, url, query;
   _me = this;
   if(!data.api){ return; }

@@ -15,16 +15,20 @@ tc.api.form.prototype.init = function(app,options){
   app.infopane.update('API Query Editor','Starting');
   var _me;
   _me = this;
+  this.api_selector = null;
   this.editor = null;
   this.editor_status = null;
+  this.query_valid = false;
   this.codemirror = null;
+  this.submit_button = null;
   this.dom = app.Y.Node.create(this.markup);
   this.table = this.dom.one('table');
   this.table.append(this.build_api_selector());
   this.table.append(this.build_json_input());
   this.table.append(this.build_submit_button());
-  this.setup_events();
   app.dom.append(this.dom);
+  
+  this.setup_events();
   
   this.codemirror = this.construct_codemirror(function(){
     app.infopane.update('API Query Editor','Started');
@@ -32,30 +36,73 @@ tc.api.form.prototype.init = function(app,options){
   },function(){
     try{
       app.Y.JSON.parse(_me.codemirror.getCode());
+      _me.editor_status.addClass('okay').removeClass('error');
       _me.editor_status._node.innerHTML = 'SYNTAX OK!';
+      _me.submit_button.setAttribute('disabled',false);
+      _me.query_valid = true;
     } catch(e){
+      _me.editor_status.addClass('error').removeClass('okay');
       _me.editor_status._node.innerHTML = 'BAD SYNTAX!';
+      _me.submit_button.setAttribute('disabled',true);
+      _me.query_valid = false;
       return;
+    }
+  });
+}
+
+tc.api.form.prototype.setup_events = function(){
+  tc.util.log('tc.api.form.prototype.setup_events');
+  var _me;
+  _me = this;
+  this.submit_button.on('click',function(event){
+    tc.util.log('tc.api.form.prototype.setup_events(click)');
+    var data;
+    if(!_me.query_valid){ return; }
+    event.preventDefault();
+    data = {};
+    data.api = _me.dom.one('select')._node.value;
+    data.query = _me.codemirror.getCode();
+    app.fire('api-form:form-submitted',data);
+  });
+  this.api_selector.on('change',function(event){
+    event.target.get('options').each(function(){
+      if(this.get('selected')){
+        app.fire('api-form:api-selected',{api:this.get('value')});
+        return false;
+      }
+    })
+  });
+  app.on('api-info:api-info-success',function(data){
+    _me.populate_api_selector(data);
+  });
+  app.on('api-info:api-code-generated',function(data){
+    if(_me.codemirror){
+      _me.codemirror.setCode(data.code);
     }
   });
 }
 
 tc.api.form.prototype.build_api_selector = function(){
   tc.util.log('tc.api.form.prototype.build_api_selector');
-  return "<tr>\
+  var element;
+  element = app.Y.Node.create("<tr>\
     <th>\
       <label>Select an API:</label>\
     </th>\
     <td>\
-      <select>\
-        <option value='generic'>generic</option>\
-        <option value='nytarticle'>nyt article</option>\
-        <option value='nytcomments'>nyt comments</option>\
-        <option value='nytnewswire'>nyt newswire</option>\
-        <option value='googlegeocode'>google geocode</option>\
-      </select>\
+      <select></select>\
     </td>\
-  </tr>";
+  </tr>");
+  this.api_selector = element.one('select');
+  return element;
+}
+
+tc.api.form.prototype.populate_api_selector = function(data){
+  tc.util.log('tc.api.form.prototype.populate_api_selector');
+  var i;
+  for(i in data){
+    this.api_selector.append('<option value="'+i+'">'+data[i].name+'</option>');
+  }
 }
 
 tc.api.form.prototype.build_json_input = function(){
@@ -96,28 +143,15 @@ tc.api.form.prototype.construct_codemirror = function(loadcallback,changecallbac
 
 tc.api.form.prototype.build_submit_button = function(){
   tc.util.log('tc.api.form.prototype.build_submit_button');
-  return "<tr>\
+  var element;
+  element = app.Y.Node.create("<tr>\
     <th></th>\
     <td>\
-      <input class='submit-button' type='submit' value='submit></input>\
+      <input class='submit-button' type='submit' value='Run Query'></input>\
     </td>\
-  </tr>";
-}
-
-
-tc.api.form.prototype.setup_events = function(){
-  tc.util.log('tc.api.form.prototype.setup_events');
-  var _me;
-  _me = this;
-  this.dom.one('.submit-button').on('click',function(event){
-    tc.util.log('tc.api.form.prototype.setup_events(click)');
-    var data;
-    event.preventDefault();
-    data = {};
-    data.api = _me.dom.one('select')._node.value;
-    data.query = _me.codemirror.getCode();
-    app.fire('api-form:form-submitted',data);
-  });
+  </tr>");
+  this.submit_button = element;
+  return element;
 }
 
 tc.api.form.prototype.submit_click_handler = function(event){

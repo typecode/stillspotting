@@ -13,6 +13,21 @@ import json
 import pymongo
 import pymongo.json_util
 
+class info(tornado.web.RequestHandler):
+  
+  def initialize(self,connections={}):
+    print '-views.api.info.initialize'
+    self.connections = connections
+  
+  @tornado.web.asynchronous
+  def get(self):
+    print '-views.api.info.get'
+    output = {}
+    for i in self.connections:
+      output[i] = self.connections[i].get_info()
+    self.write(json.dumps(output,default=pymongo.json_util.default))
+    self.finish()
+
 class api(tornado.web.RequestHandler):
   
   def initialize(self,connections={}):

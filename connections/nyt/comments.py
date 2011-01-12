@@ -10,30 +10,18 @@ import tornado.httpclient
 
 class Comments(connections.connection.Connection):
   
-  geocoder = connections.google.geocoder.Geocoder()
-  
-  listeners = {}
-  
-  buffers = {}
-  
+#### START CONNECTION-SPECIFIC MEMBERS
+  name = 'NYT Community API Connection'
+  description = 'Connects to NYT Community API.'
   default_pars = {
-    'url':'http://www.nytimes.com/2010/12/03/opinion/03krugman.html',
-    'offset':str(0)
+    'url':{'accepted':'URL TO ARTICLE WITH COMMENTS','default':'http://www.nytimes.com/2010/12/03/opinion/03krugman.html'},
+    'offset':{'accepted':'integer offset from 0','default':str(0)}
   }
-  
-  def __init__(self,settings):
-    self.settings = settings
-    self.api_key = settings['api_key']
-    print str(self)
-  
-  def __repr__(self):
-      return 'connections.nyt.comments.Comments()______________________________________\n\r\
- | connections.nyt.comments.Comments Starting\n\r\
- |   Connects to NYT Comments API.\n\r\
- |\n\r\
- | connections.nyt.comments.Comments Settings:\n\r\
- |  '+str(self.settings)+'\n\r\
- |__________________________________________________________________\n\r'
+  #DEPRECATED
+  geocoder = connections.google.geocoder.Geocoder({})
+  #DEPRECATED
+  buffers = {}
+#### END CONNECTION-SPECIFIC MEMBERS
     
   def process_request(self,req_id,pars={}):
     print 'connections.nyt.comments.Comments.process_request'
@@ -43,7 +31,7 @@ class Comments(connections.connection.Connection):
       if i not in pars:
         pars[i] = self.default_pars[i]
     
-    pars['api-key'] = self.api_key
+    pars['api-key'] = self.settings['api_key']
     
     url = 'http://api.nytimes.com/svc/community/v2/comments/url/exact-match.json?'
     url = url + urllib.urlencode(pars)
@@ -57,6 +45,9 @@ class Comments(connections.connection.Connection):
       self.emit_api_response(req_id,json)
       
     http.fetch(url,callback=handle_response)
+  
+  
+  
   
   #DEPRECATED
   def getCommentsForUrl(self,req_id,query_url):
