@@ -39,12 +39,12 @@ tc.api.form.prototype.init = function(app,options){
       app.Y.JSON.parse(_me.codemirror.getCode());
       _me.editor_status.addClass('okay').removeClass('error');
       _me.editor_status._node.innerHTML = 'SYNTAX OK!';
-      _me.submit_button.setAttribute('disabled',false);
+      //_me.submit_button.setAttribute('disabled',false);
       _me.query_valid = true;
     } catch(e){
       _me.editor_status.addClass('error').removeClass('okay');
       _me.editor_status._node.innerHTML = 'BAD SYNTAX!';
-      _me.submit_button.setAttribute('disabled',true);
+      //_me.submit_button.setAttribute('disabled',true);
       _me.query_valid = false;
       return;
     }
