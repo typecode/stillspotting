@@ -47,7 +47,7 @@ tc.api.info.prototype.get_info = function(){
 
 tc.api.info.prototype.render_info_for = function(api){
   tc.util.log('tc.api.info.prototype.render_info_for');
-  var _me;
+  var _me, parameters_table, i, par;
   if(!this.api_info){ return; }
   if(!this.api_info[api]){ 
     return; 
@@ -61,18 +61,32 @@ tc.api.info.prototype.render_info_for = function(api){
   this.dom.one('.pop_default').on('click',function(event){
     var code, i;
     event.preventDefault();
-    code = {}
-    for(i in _me.api_info[api].default_pars){
-      if(_me.api_info[api].default_pars[i].default){
-        code[i] = _me.api_info[api].default_pars[i].default;
-      }
-      
-    }
+    code = _me.api_info[api].example_query;
     code = app.Y.JSON.stringify(code,null," ");
     app.fire('api-info:api-code-generated',{code:code});
   })
   
   
   this.dom.append('<p>Query Parameters:</p>');
-  this.dom.append('<pre>'+app.Y.JSON.stringify(this.api_info[api].default_pars,null,'&nbsp;&nbsp;')+'</pre>');
+  parameters_table = app.Y.Node.create('<table class="parameter_table">\
+    <tr><th>Parameter</th><th>Details</th</tr>\
+  </table>');
+  for(i in this.api_info[api].default_pars){
+    par = this.api_info[api].default_pars[i];
+    details = ""
+    details = details + '<p><strong>Required:</strong> '+par.required+"</p>";
+    details = details + '<p><strong>Accepted:</strong> '+par.accepted+"</p>";
+    if(par.default){
+      details = details + '<p><strong>Default:</strong> '+par.default+"</p>";
+    }
+    if(par.more_info){
+      details = details + '<p><strong>More Info:</strong> <a href="'+par.more_info+'">here</a></p>';
+    }
+    parameters_table.append('<tr>\
+      <td><strong>'+i+'</strong></td>\
+      <td>'+details+'</td>\
+    </tr>')
+  }
+  this.dom.append(parameters_table);
+  //this.dom.append('<pre>'+app.Y.JSON.stringify(this.api_info[api].default_pars,null,'&nbsp;&nbsp;')+'</pre>');
 }

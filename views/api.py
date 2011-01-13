@@ -37,15 +37,17 @@ class api(tornado.web.RequestHandler):
     self.connections = connections
     
   @tornado.web.asynchronous
-  def post(self,api):
-    print '-views.api.api.post'
+  def get(self,api):
+    print '-views.api.api.get'
     print ' |api: '+str(api)
     if not api or api not in self.connections:
       raise tornado.web.HTTPError(404)
     self.api = api
     random.seed(time.clock())
     self.request_id = "".join([random.choice(string.letters+string.digits) for x in xrange(32)])
-    self.pars = tornado.escape.json_decode(self.request.body)
+    self.pars = {}
+    for i in self.request.arguments:
+      self.pars[i] = self.request.arguments[i][0]
     print ' |self.request_id: '+str(self.request_id)
     print ' |self.query_parameters: '+str(self.pars)
     output_buffer = self.connections[self.api].make_api_request(self.request_id,self.out,self.pars)
@@ -62,7 +64,7 @@ class api(tornado.web.RequestHandler):
     print '-views.api.api.out'
     print ' |api: '+str(self.api)
     print ' |self.request_id: '+str(self.request_id)
-    print ' |data: '+str(data)
+    #print ' |data: '+str(data)
     self.connections[self.api].end_request(self.request_id)
     self.write(json.dumps(data,default=pymongo.json_util.default))
     self.finish()

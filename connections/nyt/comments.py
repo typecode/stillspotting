@@ -26,12 +26,9 @@ class Comments(connections.connection.Connection):
   def process_request(self,req_id,pars={}):
     print 'connections.nyt.comments.Comments.process_request'
     http = tornado.httpclient.AsyncHTTPClient()
-    
-    for i in self.default_pars:
-      if i not in pars:
-        pars[i] = self.default_pars[i]
-    
     pars['api-key'] = self.settings['api_key']
+    
+    print str(pars)
     
     url = 'http://api.nytimes.com/svc/community/v2/comments/url/exact-match.json?'
     url = url + urllib.urlencode(pars)

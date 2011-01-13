@@ -13,8 +13,20 @@ class Article(connections.connection.Connection):
   name = 'NYT Article API Connection'
   description = 'Connects to NYT Article API.'
   default_pars = {
-    'query':{'accepted':'text string','default':''},
-    'facets':{'accepted':'facets','default':None}
+    'query':{'accepted':'text string','default':None,'required':True,
+      'more_info':'http://developer.nytimes.com/docs/read/article_search_api#h2-queries'},
+    'begin_date':{'accepted':'YYYYMMDD','default':None,'required':False},
+    'end_date':{'accepted':'YYYYMMDD','default':None,'required':False},
+    'facets':{'accepted':'facets','default':None,'required':False,
+      'more_info':'http://developer.nytimes.com/docs/read/article_search_api#h3-facets'},
+    'fields':{'accepted':'facets','default':None,'required':False,
+      'more_info':'http://developer.nytimes.com/docs/read/article_search_api#h2-responses'},
+    'offset':{'accepted':'Number of Records to offset by.','default':0,'required':False},
+    'rank':{'accepted':'newest, oldest, closest','default':'newest','required':False},
+    'n_to_fetch':{'accepted':"Number of items to fetch, multiple of 10",'default':10,'required':False}
+  }
+  example_query = {
+    'query':'Adirondacks'
   }
 #### END CONNECTION-SPECIFIC MEMBERS
   
@@ -25,17 +37,10 @@ class Article(connections.connection.Connection):
   def process_request(self,req_id,pars):
     print 'connections.nyt.article.Article.process_request'
     http = tornado.httpclient.AsyncHTTPClient()
-    
-    for i in self.default_pars:
-      if i not in pars:
-        pars[i] = self.default_pars[i]
-    
     pars['api-key'] = self.settings['api_key']
     
     url = 'http://api.nytimes.com/svc/search/v1/article?'
     url = url + urllib.urlencode(pars)
-    print url
-    
     def handle_response(response):
       try:
         json = tornado.escape.json_decode(response.body)
@@ -44,8 +49,6 @@ class Article(connections.connection.Connection):
         self.emit_api_response(req_id,[response.body])
       
     http.fetch(url,callback=handle_response)
-  
-  
   
   
   

@@ -16,35 +16,34 @@ tc.api.loader.prototype.setup_events = function(){
   });
 }
 
-
 tc.api.loader.prototype.execute_query = function(data){
   tc.util.log('tc.api.loader.prototype.execute_query');
-  app.fire('api-loader:api-query-started');
   var _me, url, query;
   _me = this;
   if(!data.api){ return; }
   if(!data.query){ return; }
   url = '/api/'+data.api+'/';
   try{
-    app.Y.JSON.parse(data.query);
+    data.query = app.Y.JSON.parse(data.query);
   } catch(e){
     app.fire('api-loader:api-query-syntax-error');
     return;
   }
+  url = url + '?' +app.Y.QueryString.stringify(data.query);
+  app.fire('api-loader:api-query-started',{url:url});
   app.Y.io(url,
     {
-      method:'POST',
-      data:data.query,
+      method:'GET',
       on:{
         success:function(transactionId, response, arguments){
           var json;
           try{
             json = app.Y.JSON.parse(response.responseText);
           } catch(e){ tc.util.log(e); return; }
-          app.fire('api-loader:api-data-success',json);
+          app.fire('api-loader:api-data-success',{data:json,url:url});
         },
         failure:function(){
-          app.fire('api-loader:api-data-error');
+          app.fire('api-loader:api-data-error',{url:url});
         }
       }
     }

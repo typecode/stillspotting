@@ -126,3 +126,10 @@ form.api-form table tr td.codemirror{ border:1px solid #ebf0d6; }
 form.api-form table tr td select{
   padding:2px;
 }
+
+table.parameter_table{  }
+table.parameter_table tr{  }
+table.parameter_table tr th,
+table.parameter_table tr td{ padding:3px;  }
+table.parameter_table tr th{  }
+table.parameter_table tr td{  }

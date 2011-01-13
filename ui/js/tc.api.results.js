@@ -15,11 +15,19 @@ tc.api.results.prototype.setup_events = function(){
   tc.util.log('tc.api.results.prototype.setup_events');
   var _me;
   _me = this;
-  app.on('api-loader:api-query-started', function(){
-    _me.dom._node.innerHTML = "<p>Loading...</p>";
+  app.on('api-loader:api-query-started', function(data){
+    _me.dom._node.innerHTML = "";
+    _me.dom.append("<p>Loading: <a href='http://"+window.location.host+""+data.url+"'>http://"+window.location.host+""+data.url+"</a></p>");
   });
   app.on('api-loader:api-data-success', function(data){
-    _me.dom._node.innerHTML = "<pre>"+app.Y.JSON.stringify(data,null,'&nbsp;&nbsp;')+"</pre>";
+    _me.dom._node.innerHTML = "";
+    _me.dom.append("<p>Loaded: <a href='http://"+window.location.host+""+data.url+"'>http://"+window.location.host+""+data.url+"</a></p>");
+    _me.dom.append("<pre>"+app.Y.JSON.stringify(data.data,null,'&nbsp;&nbsp;')+"</pre>");
+  });
+  app.on('api-loader:api-data-error', function(data){
+    _me.dom._node.innerHTML = "";
+    _me.dom.append("<p>Error on: <a href='http://"+window.location.host+""+data.url+"'>http://"+window.location.host+""+data.url+"</a></p>");
+    _me.dom.append("<pre>ERROR! PLEASE CHECK QUERY SYNTAX</pre>");
   });
 }
 

@@ -18,6 +18,7 @@ class Connection:
     'min_lng':{'accepted':'-180,180','default':None},
     'max_lng':{'accepted':'-180,180','default':None}
   }
+  example_query = {}
 #### END CONNECTION-SPECIFIC MEMBERS
   
 #### START STANDARD CONNECTION MEMBERS
@@ -43,10 +44,12 @@ class Connection:
  |__________________________________________________________________\n\r'
   
   def get_info(self):
+    print 'connections.Connection.get_info'
     info = {}
     info['name'] = self.name
     info['description'] = self.description
     info['default_pars'] = self.default_pars
+    info['example_query'] = self.example_query
     return info
   
   def process_request(self,req_id,pars):
@@ -56,8 +59,17 @@ class Connection:
   def make_api_request(self,req_id,handler,pars=None):
     print 'connections.Connection.make_api_request'
     self.listeners[req_id] = handler
-    self.process_request(req_id,pars)
+    self.process_request(req_id,self.handle_pars(pars))
     return []
+    
+  def handle_pars(self,pars):
+    print 'connections.Connection.handle_pars'
+    for i in self.default_pars:
+      if i not in pars and self.default_pars[i]['required'] is True:
+        raise tornado.web.HTTPError(400)
+      elif i not in pars and self.default_pars[i]['default'] is not None:
+        pars[i] = self.default_pars[i]['default']
+    return pars
     
   def emit_api_response(self,req_id,data):
     print 'connections.Connection.emit_api_response'
