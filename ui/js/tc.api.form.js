@@ -17,6 +17,7 @@ tc.api.form.prototype.init = function(app,options){
   _me = this;
   this.editor = null;
   this.editor_status = null;
+  this.submit_button = null;
   this.codemirror = null;
   this.dom = app.Y.Node.create(this.markup);
   this.table = this.dom.one('table');
@@ -96,12 +97,17 @@ tc.api.form.prototype.construct_codemirror = function(loadcallback,changecallbac
 
 tc.api.form.prototype.build_submit_button = function(){
   tc.util.log('tc.api.form.prototype.build_submit_button');
-  return "<tr>\
+  var element;
+  element = app.Y.Node.create("<tr>\
     <th></th>\
     <td>\
       <input class='submit-button' type='submit' value='submit></input>\
     </td>\
-  </tr>";
+  </tr>");
+  console.log(element);
+  console.log(element.one('td'));
+  this.submit_button = element.one('input');
+  return element;
 }
 
 
@@ -109,7 +115,7 @@ tc.api.form.prototype.setup_events = function(){
   tc.util.log('tc.api.form.prototype.setup_events');
   var _me;
   _me = this;
-  this.dom.one('.submit-button').on('click',function(event){
+  this.submit_button.on('click',function(event){
     tc.util.log('tc.api.form.prototype.setup_events(click)');
     var data;
     event.preventDefault();
