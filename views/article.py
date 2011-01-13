@@ -4,7 +4,6 @@ import math
 import hashlib
 import datetime
 
-import connections.nyt.newswire
 import connections.nyt.article
 import connections.nyt.comments
 

@@ -91,7 +91,7 @@ form.api-form table tr{
 
 form.api-form table tr th,
 form.api-form table tr td{
-  padding-bottom:10px;
+  padding-bottom:5px;
 }
 
 form.api-form table tr th{
@@ -102,6 +102,14 @@ form.api-form table tr th{
 form.api-form table tr td{
   vertical-align:top;
   text-align:right;
+}
+
+form.api-form table tr td p.okay{
+  color:green;
+}
+
+form.api-form table tr td p.error{
+  color:red;
 }
 
 form.api-form table tr td textarea,
@@ -118,3 +126,10 @@ form.api-form table tr td.codemirror{ border:1px solid #ebf0d6; }
 form.api-form table tr td select{
   padding:2px;
 }
+
+table.parameter_table{  }
+table.parameter_table tr{  }
+table.parameter_table tr th,
+table.parameter_table tr td{ padding:3px;  }
+table.parameter_table tr th{  }
+table.parameter_table tr td{  }
