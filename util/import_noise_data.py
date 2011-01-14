@@ -47,10 +47,10 @@ def process():
           record[model[i]] = row[i]
     
     record['_id'] = string.replace(str(record['X_Coordinate']) + ',' + str(record['Y_Coordinate']) + ',' + str(record['Created_Date']),' ',"_")
-    existing_record = database.find_one({"_id": record['_id']})
-    if existing_record is not None:
-      print 'ERROR ALREADY INSERTED ('+record['_id']+')'
-      continue
+    #existing_record = database.find_one({"_id": record['_id']})
+    #if existing_record is not None:
+    #  print 'ERROR ALREADY INSERTED ('+record['_id']+')'
+    #  continue
     _id = database.insert(record)
     if _id is None:
       print 'ERROR INSERTING ('+record['_id']+')'
