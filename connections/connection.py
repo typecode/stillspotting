@@ -75,7 +75,7 @@ class Connection:
       try:
         mytime = time.strptime(pars[i],'%m/%d/%y %H:%M')
         pars[i] = datetime(*mytime[:5])
-      except ValueError:
+      except (ValueError,TypeError):
         try:
           pars[i] = int(pars[i])
         except ValueError:
