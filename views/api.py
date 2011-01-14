@@ -51,7 +51,7 @@ class api(tornado.web.RequestHandler):
     print ' |self.request_id: '+str(self.request_id)
     print ' |self.query_parameters: '+str(self.pars)
     output_buffer = self.connections[self.api].make_api_request(self.request_id,self.out,self.pars)
-    if len(output_buffer) > 0:
+    if output_buffer is not None and len(output_buffer) > 0:
       self.out(output_buffer)
   
   def on_connection_close(self):
@@ -65,7 +65,11 @@ class api(tornado.web.RequestHandler):
     print ' |api: '+str(self.api)
     print ' |self.request_id: '+str(self.request_id)
     #print ' |data: '+str(data)
+    output = {
+      'request_id':self.request_id,
+      'data':data
+    }
     self.connections[self.api].end_request(self.request_id)
-    self.write(json.dumps(data,default=pymongo.json_util.default))
+    self.write(json.dumps(output,default=pymongo.json_util.default))
     self.finish()
   

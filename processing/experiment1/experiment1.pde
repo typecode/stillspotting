@@ -9,7 +9,7 @@ void setup(){
 }
  
 void draw() {
-  if(frameCount % 5){
+  if(frameCount % 1 == 0){
     loader.request("http://localhost:8888/api/info/");
   }
   if(loader.responses.size() > 0) {

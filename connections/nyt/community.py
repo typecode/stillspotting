@@ -8,14 +8,15 @@ import connections.connection
 sys.path.append("lib")
 import tornado.httpclient
 
-class Comments(connections.connection.Connection):
+class Community(connections.connection.Connection):
   
 #### START CONNECTION-SPECIFIC MEMBERS
   name = 'NYT Community API Connection'
   description = 'Connects to NYT Community API.'
   default_pars = {
-    'url':{'accepted':'URL TO ARTICLE WITH COMMENTS','default':'http://www.nytimes.com/2010/12/03/opinion/03krugman.html'},
-    'offset':{'accepted':'integer offset from 0','default':str(0)}
+    'url':{'accepted':'URL TO ARTICLE WITH COMMENTS','default':'http://www.nytimes.com/2010/12/03/opinion/03krugman.html',
+      'required':False},
+    'offset':{'accepted':'integer offset from 0','default':str(0),'required':False}
   }
   #DEPRECATED
   geocoder = connections.google.geocoder.Geocoder({})

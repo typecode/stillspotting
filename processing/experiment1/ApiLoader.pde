@@ -17,7 +17,7 @@ class APILoader implements DataLoadCallback {
     CachedDataLoadQueue queue;
     queue=new CachedDataLoadQueue(parentapp, new String[]{url}, null);
     queue.setCallback(this);
-    queue.start();  
+    queue.start();
   }
   
   JSONObject get_response(){

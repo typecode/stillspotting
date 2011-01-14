@@ -22,6 +22,7 @@ class Connection:
 #### END CONNECTION-SPECIFIC MEMBERS
   
 #### START STANDARD CONNECTION MEMBERS
+  buffers = {}
   listeners = {}
   settings = None
 #### END STANDARD CONNECTION MEMBERS
@@ -58,24 +59,30 @@ class Connection:
   
   def make_api_request(self,req_id,handler,pars=None):
     print 'connections.Connection.make_api_request'
+    if req_id in self.buffers and len(self.buffers[req_id]) > 0:
+      return self.buffers[req_id]
     self.listeners[req_id] = handler
     self.process_request(req_id,self.handle_pars(pars))
-    return []
     
   def handle_pars(self,pars):
     print 'connections.Connection.handle_pars'
     for i in self.default_pars:
-      if i not in pars and self.default_pars[i]['required'] is True:
-        raise tornado.web.HTTPError(400)
-      elif i not in pars and self.default_pars[i]['default'] is not None:
-        pars[i] = self.default_pars[i]['default']
+      if self.default_pars[i]['required'] is True and i not in pars:
+        if self.default_pars[i]['default'] is not None:
+          pars[i] = self.default_pars[i]['default']
+        else:
+          raise tornado.web.HTTPError(400)
     return pars
     
   def emit_api_response(self,req_id,data):
     print 'connections.Connection.emit_api_response'
     if req_id in self.listeners and self.listeners[req_id] is not None:
       self.listeners[req_id](data)
-    
+    else:
+      if req_id not in self.buffers:
+        self.buffers[req_id] = []
+      self.buffers[req_id].append(data)
+      
   def end_request(self,req_id):
     print 'connections.Connection.end_request\n\r'
     if req_id in self.listeners:
