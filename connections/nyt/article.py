@@ -30,10 +30,6 @@ class Article(connections.connection.Connection):
   }
 #### END CONNECTION-SPECIFIC MEMBERS
   
-  def __init__(self,settings):
-    self.settings = settings
-    print str(self)
-  
   def process_request(self,req_id,pars):
     print 'connections.nyt.article.Article.process_request'
     http = tornado.httpclient.AsyncHTTPClient()

@@ -7,6 +7,7 @@ import hashlib
 
 import connections.nyt.article
 import connections.nyt.comments
+import connections.nyc311.noiseComplaints
 
 sys.path.append("lib")
 import tornado.httpserver
@@ -47,7 +48,8 @@ connections = {
   'nytcomments':connections.nyt.comments.Comments({
     'api_key':'3cd7b97dd0c16c8523ea7ccba7f5fdd1:13:49052537'
   }),
-  'googlegeocode':connections.google.geocoder.Geocoder({})
+  'googlegeocode':connections.google.geocoder.Geocoder({}),
+  'nyc311noiseComplaints':connections.nyc311.noiseComplaints.NoiseComplaints({})
 }
 
 tornado_settings = {

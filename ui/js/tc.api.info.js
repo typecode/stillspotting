@@ -62,14 +62,13 @@ tc.api.info.prototype.render_info_for = function(api){
     var code, i;
     event.preventDefault();
     code = _me.api_info[api].example_query;
-    code = app.Y.JSON.stringify(code,null," ");
+    code = app.Y.JSON.stringify(code,null,"\t");
     app.fire('api-info:api-code-generated',{code:code});
   })
   
   
-  this.dom.append('<p>Query Parameters:</p>');
+  this.dom.append('<p>Query Parameters:</p><br />');
   parameters_table = app.Y.Node.create('<table class="parameter_table">\
-    <tr><th>Parameter</th><th>Details</th</tr>\
   </table>');
   for(i in this.api_info[api].default_pars){
     par = this.api_info[api].default_pars[i];
@@ -82,10 +81,13 @@ tc.api.info.prototype.render_info_for = function(api){
     if(par.more_info){
       details = details + '<p><strong>More Info:</strong> <a href="'+par.more_info+'">here</a></p>';
     }
-    parameters_table.append('<tr>\
-      <td><strong>'+i+'</strong></td>\
-      <td>'+details+'</td>\
-    </tr>')
+    parameters_table.append('<tbody>\
+      <tr>\
+        <th colspan="2">'+i+'</th>\
+      </tr><tr>\
+        <td colspan="2">'+details+'</td>\
+      </tr>\
+    </tbody>')
   }
   this.dom.append(parameters_table);
   //this.dom.append('<pre>'+app.Y.JSON.stringify(this.api_info[api].default_pars,null,'&nbsp;&nbsp;')+'</pre>');

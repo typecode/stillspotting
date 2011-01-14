@@ -3,6 +3,8 @@ import urllib
 import datetime
 import hashlib
 import pprint
+import time
+import datetime
 
 sys.path.append("lib")
 import tornado.httpclient
@@ -69,6 +71,15 @@ class Connection:
         raise tornado.web.HTTPError(400)
       elif i not in pars and self.default_pars[i]['default'] is not None:
         pars[i] = self.default_pars[i]['default']
+    for i in pars:
+      try:
+        mytime = time.strptime(pars[i],'%m/%d/%y %H:%M')
+        pars[i] = datetime(*mytime[:5])
+      except ValueError:
+        try:
+          pars[i] = int(pars[i])
+        except ValueError:
+          pass
     return pars
     
   def emit_api_response(self,req_id,data):

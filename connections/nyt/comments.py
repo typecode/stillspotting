@@ -14,8 +14,12 @@ class Comments(connections.connection.Connection):
   name = 'NYT Community API Connection'
   description = 'Connects to NYT Community API.'
   default_pars = {
-    'url':{'accepted':'URL TO ARTICLE WITH COMMENTS','default':'http://www.nytimes.com/2010/12/03/opinion/03krugman.html'},
-    'offset':{'accepted':'integer offset from 0','default':str(0)}
+    'url':{'accepted':'URL to Article Containing Comments','default':None, 'required':False},
+    'offset':{'accepted':'integer offset from 0','default':str(0), 'required':False}
+  }
+  example_query = {
+    'url':'http://www.nytimes.com/2010/12/03/opinion/03krugman.html',
+    'offset':0
   }
   #DEPRECATED
   geocoder = connections.google.geocoder.Geocoder({})
@@ -42,7 +46,6 @@ class Comments(connections.connection.Connection):
       self.emit_api_response(req_id,json)
       
     http.fetch(url,callback=handle_response)
-  
   
   
   
