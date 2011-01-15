@@ -37,10 +37,6 @@ class Article(connections.connection.Connection):
   request_queue_stopped = True
   request_queue_timer = None
   
-  def __init__(self,settings):
-    self.settings = settings
-    print str(self)
-  
   def process_request(self,req_id,pars):
     print 'connections.nyt.article.Article.process_request'
     http = tornado.httpclient.AsyncHTTPClient()
@@ -98,10 +94,6 @@ class Article(connections.connection.Connection):
       return
     item = self.request_queue.pop(0)
     http.fetch(item['url'],callback=item['callback'])
-  
-  
-  
-  
   
   #DEPRECATED
   def getArticleByUrl(self,req_id,query_url):

@@ -136,6 +136,8 @@ tc.api.form.prototype.construct_codemirror = function(loadcallback,changecallbac
     parserfile: ["tokenizejavascript.js", "parsejavascript.js"],
     path: "js/lib/codemirror/",
     stylesheet: "css/tc.jseditor.css",
+    reindentOnLoad:true,
+    indentUnit:0,
     onLoad:loadcallback,
     onChange:changecallback
   });
