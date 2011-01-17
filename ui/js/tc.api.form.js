@@ -24,9 +24,9 @@ tc.api.form.prototype.init = function(app,options){
   this.submit_button = null;
   this.dom = app.Y.Node.create(this.markup);
   this.table = this.dom.one('table');
-  this.table.append(this.build_api_selector());
-  this.table.append(this.build_json_input());
-  this.table.append(this.build_submit_button());
+  this.table.one('tbody').append(this.build_api_selector());
+  this.table.one('tbody').append(this.build_json_input());
+  this.table.one('tbody').append(this.build_submit_button());
   app.dom.append(this.dom);
   
   this.setup_events();
@@ -144,7 +144,6 @@ tc.api.form.prototype.construct_codemirror = function(loadcallback,changecallbac
   return codemirror;
 }
 
-
 tc.api.form.prototype.build_submit_button = function(){
   tc.util.log('tc.api.form.prototype.build_submit_button');
   var element;
@@ -157,7 +156,6 @@ tc.api.form.prototype.build_submit_button = function(){
   this.submit_button = element.one('input');
   return element;
 }
-
 
 tc.api.form.prototype.submit_click_handler = function(event){
   tc.util.log('tc.api.form.prototype.submit_click_handler');

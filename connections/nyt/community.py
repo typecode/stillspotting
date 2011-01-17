@@ -32,8 +32,6 @@ class Community(connections.connection.Connection):
     http = tornado.httpclient.AsyncHTTPClient()
     pars['api-key'] = self.settings['api_key']
     
-    print str(pars)
-    
     url = 'http://api.nytimes.com/svc/community/v2/comments/url/exact-match.json?'
     url = url + urllib.urlencode(pars)
     
