@@ -4,6 +4,8 @@ import math
 import hashlib
 import datetime
 
+import views.handler
+
 sys.path.append("lib")
 import tornado.httpclient
 import json
@@ -13,7 +15,7 @@ import pymongo.json_util
 database = pymongo.Connection('localhost', 27017).tc.geoitems
 #database.ensureIndex( { 'loc' : "2d" } )
 
-class bounds(tornado.web.RequestHandler):
+class bounds(views.handler.handler):
   @tornado.web.asynchronous
   def get(self,zoom,ne,sw):
     _ne = ne.split(',')

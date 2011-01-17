@@ -47,8 +47,6 @@ class Community(connections.connection.Connection):
       
     http.fetch(url,callback=handle_response)
   
-  
-  
   #DEPRECATED
   def getCommentsForUrl(self,req_id,query_url):
     print 'Comments.getCommentsForUrl'

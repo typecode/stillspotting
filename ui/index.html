@@ -80,12 +80,16 @@
   <script type="text/javascript" src="./js/tc.viewswitcher.js"></script>
   <script type="text/javascript" src="./js/tc.infopane.js"></script>
   
+  <script type="text/javascript" src="./js/tc.user.js"></script>
+  
   <script type="text/javascript" src="./js/app.js"></script>
   <script type="text/javascript" charset="utf-8">
     YUI().use('io','json','node','event-custom','node-event-simulate','overlay','widget-stdmod',
       'gallery-form','querystring-stringify-simple',function(Y){
         var options;
-        options = {};
+        options = {
+          view:'api'
+        };
         if(window.location.hash){
           options.view = window.location.hash.split('#')[1];
         }

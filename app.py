@@ -17,6 +17,8 @@ import tornado.web
 
 import pymongo
 
+import views.handler
+import views.user
 import views.api
 import views.article
 import views.geoitem
@@ -53,7 +55,9 @@ connections = {
 }
 
 tornado_settings = {
-  "static_path": os.path.join(os.path.dirname(__file__), "ui")
+  "static_path": os.path.join(os.path.dirname(__file__), "ui"),
+  "cookie_secret":"This is my tornado secure cookie secret.",
+  "login_url": "/login/"
 }
 
 application = tornado.web.Application([
@@ -61,7 +65,12 @@ application = tornado.web.Application([
   (r"/article/updates", views.article.updates),
   (r"/geoitem/bounds/(.*)/(.*)/(.*)/", views.geoitem.bounds),
   (r"/api/info/", views.api.info,dict(connections=connections)),
-  (r"/api/(.*)/", views.api.api,dict(connections=connections))
+  (r"/api/(.*)/", views.api.api,dict(connections=connections)),
+  (r"/user/current/", views.user.current),
+  (r"/register/",views.user.register),
+  (r"/login/",views.user.login),
+  (r"/logout/",views.user.logout),
+  (r"/",views.handler.handler)
 ],**tornado_settings)
 
 if __name__ == "__main__":

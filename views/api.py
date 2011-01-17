@@ -7,13 +7,15 @@ import random
 import string
 import time
 
+import views.handler
+
 sys.path.append("lib")
 import tornado.httpclient
 import json
 import pymongo
 import pymongo.json_util
 
-class info(tornado.web.RequestHandler):
+class info(views.handler.handler):
   
   def initialize(self,connections={}):
     print '-views.api.info.initialize'
@@ -28,7 +30,9 @@ class info(tornado.web.RequestHandler):
     self.write(json.dumps(output,default=pymongo.json_util.default))
     self.finish()
 
-class api(tornado.web.RequestHandler):
+
+
+class api(views.handler.handler):
   
   def initialize(self,connections={}):
     print '-views.api.api.init'

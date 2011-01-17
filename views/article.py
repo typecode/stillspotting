@@ -7,13 +7,15 @@ import datetime
 import connections.nyt.article
 import connections.nyt.comments
 
+import views.handler
+
 sys.path.append("lib")
 import tornado.httpclient
 import json
 import pymongo
 import pymongo.json_util
 
-class comments(tornado.web.RequestHandler):
+class comments(views.handler.handler):
   nytarticle = connections.nyt.article.Article({
     'api_key':'6b386fbb1141bc111298f599fe611bab:1:49052537'
   })

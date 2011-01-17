@@ -15,9 +15,10 @@ var app = {
     
     //app.setup_submission_form();
     
+    app.user = new tc.user(app,{});
+    
     app.infopane = new tc.infopane(app,{});
     app.infopane.update('App Status',"starting");
-    
     
     switch(options.view){
       case 'api':
