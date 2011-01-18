@@ -16,7 +16,7 @@ body{ height:100%;width:100%; position:relative; background-color:#ebf0d6; }
 #query a{ font-size:14px; font-style:italic; margin-left:7px; }
 
 .infopane{
-  position:absolute;
+  position:fixed;
   z-index:9999;
   right:0px;
   top:0px;
@@ -31,6 +31,7 @@ body{ height:100%;width:100%; position:relative; background-color:#ebf0d6; }
   display:inline-block;
   float:right;
   clear:right;
+  border:1px solid #193451;
 }
 
 .infopane p{
@@ -53,9 +54,15 @@ body{ height:100%;width:100%; position:relative; background-color:#ebf0d6; }
   background-color:white;
   display:block;
   float:left;
-  width:35%;
+  width:40.5%;
   margin:1% 0% 1% 0%;
   padding:10px;
+  border-top:1px solid #40909C;
+  border-left:1px solid #40909C;
+  border-right:2px solid #40909C;
+  border-bottom:2px solid #40909C;
+  height:395px;
+  overflow-y:scroll;
 }
 
 .api-results{
@@ -65,9 +72,13 @@ body{ height:100%;width:100%; position:relative; background-color:#ebf0d6; }
   display:block;
   clear:both;
   float:left;
-  width:82%;
-  margin:1%;
+  width:94%;
+  margin:0% 1% 1% 1%;
   padding:10px;
+  border-top:1px solid #40909C;
+  border-left:1px solid #40909C;
+  border-right:2px solid #40909C;
+  border-bottom:2px solid #40909C;
 }
 
 form.api-form{
@@ -76,9 +87,14 @@ form.api-form{
   text-align:left;
   background-color:white;
   display:block;
-  width:45%;
+  width:50%;
   margin:1% 1% 0% 1%;
   padding:10px;
+  border-top:1px solid #40909C;
+  border-left:1px solid #40909C;
+  border-right:2px solid #40909C;
+  border-bottom:2px solid #40909C;
+  height:395px;
 }
 
 form.api-form table{
