@@ -38,21 +38,30 @@ class Article(connections.connection.Connection):
   request_queue_stopped = True
   request_queue_timer = None
   
+  n_requests = 1
+  n_requests_received = 0
+  
   def process_request(self,user,req_id,pars):
     print 'connections.nyt.article.Article.process_request'
     http = tornado.httpclient.AsyncHTTPClient()
     
-    n_requests = 1
+    output = []
+    
     if 'n_to_fetch' in pars and pars['n_to_fetch'] is not None and float(pars['n_to_fetch']) > 10:
-      n_requests = math.ceil(float(pars['n_to_fetch'])/10.0)
+      self.n_requests = math.ceil(float(pars['n_to_fetch'])/10.0)
     
     def handle_response(response):
+      self.n_requests_received = self.n_requests_received + 1
       try:
         json = tornado.escape.json_decode(response.body)
-        self.emit_api_response(req_id,json)
-      except TypeError:
-        self.emit_api_response(req_id,[response.body])
-      self.run_queue()
+        output.append(json)
+      except TypeError, ValueError:
+        print str(response.body)
+        pass
+      if self.n_requests_received == self.n_requests:
+        self.emit_api_response(req_id,output)
+      else:
+        self.run_queue()
     
     def generate_request(offset):
       request = {}
@@ -68,11 +77,11 @@ class Article(connections.connection.Connection):
       request['url'] = url
       return request
     
-    for i in range(0,int(n_requests)):
+    for i in range(0,int(self.n_requests)):
       if 'offset' in pars and pars['offset'] is not None:
-        self.add_to_queue(generate_request(int(pars['offset'])+(i*10)))
+        self.add_to_queue(generate_request(int(pars['offset'])+(i)))
       else:
-        self.add_to_queue(generate_request(i*10))
+        self.add_to_queue(generate_request(i))
   
   def add_to_queue(self,item):
     print 'connections.nyt.article.Article.add_to_queue'
