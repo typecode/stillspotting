@@ -33,7 +33,6 @@ tc.api.form.prototype.init = function(app,options){
   
   this.codemirror = this.construct_codemirror(function(){
     app.infopane.update('API Query Editor','Started');
-    _me.codemirror.setCode('{"loaded":true}');
   },function(){
     try{
       app.Y.JSON.parse(_me.codemirror.getCode());
@@ -101,6 +100,7 @@ tc.api.form.prototype.build_api_selector = function(){
 tc.api.form.prototype.populate_api_selector = function(data){
   tc.util.log('tc.api.form.prototype.populate_api_selector');
   var i;
+  this.api_selector.append('<option value=""></option>');
   for(i in data){
     this.api_selector.append('<option value="'+i+'">'+data[i].name+'</option>');
   }

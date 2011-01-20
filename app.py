@@ -43,7 +43,8 @@ print ''
 
 connections = {
   'generic' : connections.connection.Connection({
-    'database':database
+    'database':database,
+    'disabled':True
   }),
   'nytarticle': connections.nyt.article.Article({
     'api_key':'1b9f2c309a5bb7426b1aa181b2f1a1cc:13:62473522'
@@ -53,6 +54,11 @@ connections = {
   }),
   'googlegeocode': connections.google.geocoder.Geocoder({}),
   'nyc311noiseComplaints': connections.nyc311.noiseComplaints.NoiseComplaints({}),
+  'flickr': connections.flickr.flickrConnection.FlickrConnection({
+    'api_key':'9ce620aec9b49f8de2cafa5144ab3876',
+    'secret':'05b101b95c7e75d6',
+    'disabled':True
+  }),
   'flickrimages': connections.flickr.photos.geo.photosForLocation.PhotosForLocation({
     'api_key':'9ce620aec9b49f8de2cafa5144ab3876',
     'secret':'05b101b95c7e75d6'
@@ -70,6 +76,8 @@ application = tornado.web.Application([
   (r"/article/updates", views.article.updates),
   (r"/geoitem/bounds/(.*)/(.*)/(.*)/", views.geoitem.bounds),
   (r"/api/info/", views.api.info,dict(connections=connections)),
+  (r"/api/(.*)/auth/", views.api.auth,dict(connections=connections)),
+  (r"/api/(.*)/authenticated/", views.api.authenticated,dict(connections=connections)),
   (r"/api/(.*)/", views.api.api,dict(connections=connections)),
   (r"/user/current/", views.user.current),
   (r"/register/",views.user.register),

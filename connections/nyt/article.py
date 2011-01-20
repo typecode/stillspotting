@@ -29,7 +29,8 @@ class Article(connections.connection.Connection):
     'n_to_fetch':{'accepted':"Number of items to fetch",'default':10,'required':False}
   }
   example_query = {
-    'query':'Adirondacks'
+    'query':"abstract:noise geo_facet:[NEW YORK CITY]",
+    'fields':"title,abstract,geo_facet"
   }
 #### END CONNECTION-SPECIFIC MEMBERS
   
@@ -37,7 +38,7 @@ class Article(connections.connection.Connection):
   request_queue_stopped = True
   request_queue_timer = None
   
-  def process_request(self,req_id,pars):
+  def process_request(self,user,req_id,pars):
     print 'connections.nyt.article.Article.process_request'
     http = tornado.httpclient.AsyncHTTPClient()
     

@@ -57,6 +57,10 @@ tc.api.info.prototype.render_info_for = function(api){
   this.dom._node.innerHTML = "";
   this.dom.append('<h2>'+this.api_info[api].name+'</h2>');
   this.dom.append('<p>'+this.api_info[api].description+'</p><br />');
+  if(this.api_info[api].authorized === false){
+    this.dom.append('<p>You must <a href="/api/'+api+'/auth/">authenticate</a> to use this API.</p><br />');
+  }
+  
   this.dom.append('<p><a href="#" class="pop_default">◀ Populate Default Query</a></p><br />');
   this.dom.one('.pop_default').on('click',function(event){
     var code, i;
@@ -64,8 +68,9 @@ tc.api.info.prototype.render_info_for = function(api){
     code = _me.api_info[api].example_query;
     code = app.Y.JSON.stringify(code,null,"\t");
     app.fire('api-info:api-code-generated',{code:code});
-  })
+  });
   
+  app.fire('api-info:api-code-generated',{code:app.Y.JSON.stringify(_me.api_info[api].example_query,null,"\t")});
   
   this.dom.append('<p>Query Parameters:</p><br />');
   parameters_table = app.Y.Node.create('<table class="parameter_table">\

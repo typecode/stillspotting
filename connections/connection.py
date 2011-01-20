@@ -46,8 +46,10 @@ class Connection:
 '+pp.pformat(self.settings)+'\n\r\
  |__________________________________________________________________\n\r'
   
-  def get_info(self):
+  def get_info(self,user=None):
     print 'connections.Connection.get_info'
+    if 'disabled' in self.settings and self.settings['disabled']:
+      return None
     info = {}
     info['name'] = self.name
     info['description'] = self.description
@@ -55,16 +57,16 @@ class Connection:
     info['example_query'] = self.example_query
     return info
   
-  def process_request(self,req_id,pars):
+  def process_request(self,user,req_id,pars):
     print 'connections.Connection.process_request'
     self.emit_api_response(req_id,{'Generic Output':123456789})
   
-  def make_api_request(self,req_id,handler,pars=None):
+  def make_api_request(self,user,req_id,handler,pars=None):
     print 'connections.Connection.make_api_request'
     if req_id in self.buffers and len(self.buffers[req_id]) > 0:
       return self.buffers[req_id]
     self.listeners[req_id] = handler
-    self.process_request(req_id,self.handle_pars(pars))
+    self.process_request(user,req_id,self.handle_pars(pars))
     
   def handle_pars(self,pars):
     print 'connections.Connection.handle_pars'

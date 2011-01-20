@@ -55,7 +55,7 @@ class NoiseComplaints(connections.connection.Connection):
   mongo_conn = pymongo.Connection('localhost', 27017)
   db = mongo_conn['tc']
   
-  def process_request(self,req_id,pars):
+  def process_request(self,user,req_id,pars):
     print 'connections.nyc311.noiseComplaint.NoiseComplaint.process_request'
     
     results = self.db.noiseComplaints.find(pars)

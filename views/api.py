@@ -21,16 +21,49 @@ class info(views.handler.handler):
     print '-views.api.info.initialize'
     self.connections = connections
   
+  @tornado.web.authenticated
   @tornado.web.asynchronous
   def get(self):
     print '-views.api.info.get'
     output = {}
     for i in self.connections:
-      output[i] = self.connections[i].get_info()
+      info = self.connections[i].get_info(self.current_user)
+      if info is not None:
+        output[i] = info
     self.write(json.dumps(output,default=pymongo.json_util.default))
     self.finish()
 
-
+class auth(views.handler.handler):
+  def initialize(self,connections={}):
+    print '-views.api.auth.init'
+    self.connections = connections
+  
+  @tornado.web.authenticated
+  @tornado.web.asynchronous
+  def get(self,api):
+    print '-views.api.auth.get'
+    print ' |api: '+str(api)
+    if not api or api not in self.connections:
+      raise tornado.web.HTTPError(404)
+    self.redirect(self.connections[api].generate_auth_url())
+    
+    
+class authenticated(views.handler.handler):
+  def initialize(self,connections={}):
+    print '-views.api.auth.init'
+    self.connections = connections
+  
+  @tornado.web.authenticated
+  @tornado.web.asynchronous
+  def get(self,api):
+    print '-views.api.authenticated.get'
+    print ' |api: '+str(api)
+    print ' |pars: '+str(self.request.arguments)
+    if not api or api not in self.connections:
+      raise tornado.web.HTTPError(404)
+    def finish():
+      self.redirect('/')
+    self.connections[api].handle_auth_response(self.request.arguments,self.current_user,finish)
 
 class api(views.handler.handler):
   
@@ -39,7 +72,8 @@ class api(views.handler.handler):
     self.request_id = None
     self.api = None
     self.connections = connections
-    
+  
+  @tornado.web.authenticated
   @tornado.web.asynchronous
   def get(self,api):
     print '-views.api.api.get'
@@ -54,7 +88,7 @@ class api(views.handler.handler):
       self.pars[i] = self.request.arguments[i][0]
     print ' |self.request_id: '+str(self.request_id)
     print ' |self.query_parameters: '+str(self.pars)
-    output_buffer = self.connections[self.api].make_api_request(self.request_id,self.out,self.pars)
+    output_buffer = self.connections[self.api].make_api_request(self.current_user,self.request_id,self.out,self.pars)
     if output_buffer is not None and len(output_buffer) > 0:
       self.out(output_buffer)
   

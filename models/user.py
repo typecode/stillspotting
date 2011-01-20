@@ -13,6 +13,7 @@ import pymongo.json_util
 
 class User():
   
+  user_data = None
   session_data = None
   db = pymongo.Connection('localhost', 27017)['tc']
   
@@ -43,11 +44,30 @@ class User():
       'email':email,
       'authenticated':True
     }
-    self.db.users.insert(new)
-    
+    _id = self.db.users.insert(new)
+    new['_id'] = _id
+    self.user_data = new
+  
+  def update(self,key,value):
+    print '#models.user.User().update'
+    if value is None:
+      if self.user_data[key]:
+        self.user_data.remove(key)
+    else:
+      self.user_data[key] = value
+    self.db.users.update({'email':self.user_data['email']},{'$set':{key:value}})
+  
   def revive_from_session(self,session_data):
     print '#models.user.User.revive_from_session'
     self.session_data = pickle.loads(session_data)
+    if self.session_data is None:
+      return
+    records = self.db.users.find({'email':self.session_data['email']})
+    if records.count() == 0:
+      return False
+    else:
+      self.user_data = records[0]
+      print str(self.user_data)
     
   def start_session(self,email,password):
     print '#models.user.User.start_session'
@@ -55,6 +75,7 @@ class User():
     if records.count() == 0:
       return False
     else:
+      self.user_data = records[0]
       self.session_data = {
         'email':records[0]['email'],
         'authenticated':True

@@ -21,7 +21,7 @@ class Geocoder(connections.connection.Connection):
   }
 #### END CONNECTION-SPECIFIC MEMBERS
   
-  def process_request(self,req_id,pars):
+  def process_request(self,user,req_id,pars):
     print 'connections.google.geocoder.Geocoder.process_request'
     
     def handle_response(response):
