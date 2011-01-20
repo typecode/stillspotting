@@ -1,0 +1,58 @@
+/*------------------------------------------
+	grid
+	
+	Example markup:
+	<div class="grid">
+		<div class="column x8">
+			<div class="column x2">
+				...
+			</div>
+			<div class="column x6">
+				...
+			</div>
+		</div>
+		<div class="column x4">
+			...
+		</div>
+	</div>
+------------------------------------------*/
+
+/*----- base -----*/
+
+.grid:after { 
+	content:"."; display:block; clear:both; 
+	visibility:hidden; line-height:0; height:0; 
+}
+.grid { 
+	position:relative; clear:both; 
+	margin:auto; text-align:left; 
+	display:inline-block;
+}
+html[xmlns] .grid { display:block; }
+* html .grid { zoom:1; }
+
+.column   { float:left; display:inline; }
+.column-r { float:right; display:inline; }
+
+/*----- widths -----*/
+
+.x1 { }
+.x2 { }
+.x3 { }
+.x4 { }
+.x5 { }
+.x6 { }
+.x7 { }
+.x8 { }
+.x9 { }
+.x10 { }
+.x11 { }
+.xFull { }
+
+/*----- gutters -----*/
+
+.column { /*margin-left: ;*/ }
+.column:first-child { margin-left:0; }
+
+.column-r { /*margin-right: ;*/ }
+.column-r:first-child { margin-right:0; }
