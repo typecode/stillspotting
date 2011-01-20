@@ -32,8 +32,9 @@ class PhotosForLocation(connections.flickr.flickrConnection.FlickrConnection):
   
   def process_request(self,user,req_id,pars={}):
     print 'connections.flickr.images.Images.process_request'
+    if self.is_user_authenticated(user) is False:
+      return
     http = tornado.httpclient.AsyncHTTPClient()
-    print str(pars)
     request_pars = self.handle_pars(pars)
     
     request_pars['api_key'] = self.settings['api_key']
@@ -41,19 +42,10 @@ class PhotosForLocation(connections.flickr.flickrConnection.FlickrConnection):
     request_pars['method'] = 'flickr.photos.geo.photosForLocation'
     request_pars['format'] = 'json'
     
-    m = md5.new()
-    m.update(self.settings['secret'])
-    for i in sorted(request_pars.iterkeys()):
-      m.update(i)
-      m.update(str(request_pars[i]))
-    request_pars['api_sig'] = m.hexdigest()
-    
-    print str(request_pars)
+    request_pars['api_sig'] = self.generate_api_sig(request_pars)
     
     url = 'http://api.flickr.com/services/rest/?'
     url = url + urllib.urlencode(request_pars)
-    
-    print(str(url))
     
     def handle_response(response):
       json_string = string.lstrip(response.body,'jsonFlickrApi(')
@@ -63,7 +55,6 @@ class PhotosForLocation(connections.flickr.flickrConnection.FlickrConnection):
       except TypeError, ValueError:
         self.emit_api_response(req_id,[response.body])
         return
-      print str(json)
       self.emit_api_response(req_id,json)
       
     http.fetch(url,callback=handle_response)

@@ -13,6 +13,15 @@ import pymongo
 
 class FlickrConnection(connections.connection.Connection):
   
+  def is_user_authenticated(self,user=None):
+    print 'connections.Connection.is_user_authenticated'
+    if user is not None:
+      if 'flickr' in user.user_data\
+      and 'auth' in user.user_data['flickr']\
+      and 'token' in user.user_data['flickr']['auth']:
+        return True
+    return False
+  
   def get_info(self,user=None):
     print 'connections.Connection.get_info'
     if 'disabled' in self.settings and self.settings['disabled']:
@@ -22,12 +31,9 @@ class FlickrConnection(connections.connection.Connection):
     info['description'] = self.description
     info['default_pars'] = self.default_pars
     info['example_query'] = self.example_query
-    info['authorized'] = False
-    if user is not None:
-      if 'flickr' in user.user_data\
-      and 'auth' in user.user_data['flickr']\
-      and 'token' in user.user_data['flickr']['auth']:
-        info['authorized'] = True
+    info['authorized'] = self.is_user_authenticated(user)
+    
+        
     return info
     
   def generate_auth_url(self):
@@ -67,14 +73,20 @@ class FlickrConnection(connections.connection.Connection):
       try:
         json = tornado.escape.json_decode(json_string)
       except TypeError, ValueError:
-        pass
         return
-        
-      print str(json)
-      
       user.update('flickr',{'auth':json[u'auth']})
-      
       if callback is not None:
         callback()
       
     http.fetch(url,callback=handle_response)
+    
+  def generate_api_sig(self,pars):
+    print 'connections.flickr.flickrConnection.generate_api_sig'
+    m = md5.new()
+    m.update(self.settings['secret'])
+    for i in sorted(pars.iterkeys()):
+      m.update(i)
+      m.update(str(pars[i]))
+    return m.hexdigest()
+    
+    

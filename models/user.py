@@ -38,7 +38,7 @@ class User():
       return False
     new = {
       'email':email,
-      'passhash':password
+      'passhash':hashlib.md5(password).hexdigest()
     }
     self.session_data = {
       'email':email,
@@ -71,7 +71,7 @@ class User():
     
   def start_session(self,email,password):
     print '#models.user.User.start_session'
-    records = self.db.users.find({'email':email,'passhash':password})
+    records = self.db.users.find({'email':email,'passhash':hashlib.md5(password).hexdigest()})
     if records.count() == 0:
       return False
     else:

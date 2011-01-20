@@ -26,8 +26,9 @@ class Search(connections.flickr.flickrConnection.FlickrConnection):
   
   def process_request(self,user,req_id,pars={}):
     print 'connections.flickr.photos.search.Search.process_request'
+    if self.is_user_authenticated(user) is False:
+      return
     http = tornado.httpclient.AsyncHTTPClient()
-    print str(pars)
     request_pars = self.handle_pars(pars)
     
     request_pars['api_key'] = self.settings['api_key']
@@ -35,12 +36,7 @@ class Search(connections.flickr.flickrConnection.FlickrConnection):
     request_pars['method'] = 'flickr.photos.search'
     request_pars['format'] = 'json'
     
-    m = md5.new()
-    m.update(self.settings['secret'])
-    for i in sorted(request_pars.iterkeys()):
-      m.update(i)
-      m.update(str(request_pars[i]))
-    request_pars['api_sig'] = m.hexdigest()
+    request_pars['api_sig'] = self.generate_api_sig(request_pars)
     
     url = 'http://api.flickr.com/services/rest/?'
     url = url + urllib.urlencode(request_pars)
@@ -53,7 +49,6 @@ class Search(connections.flickr.flickrConnection.FlickrConnection):
       except TypeError, ValueError:
         self.emit_api_response(req_id,[response.body])
         return
-      print str(json)
       self.emit_api_response(req_id,json)
       
     http.fetch(url,callback=handle_response)
