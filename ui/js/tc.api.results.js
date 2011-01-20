@@ -22,7 +22,7 @@ tc.api.results.prototype.setup_events = function(){
   app.on('api-loader:api-data-success', function(data){
     _me.dom._node.innerHTML = "";
     _me.dom.append("<p>Loaded: <a href='http://"+window.location.host+""+data.url+"'>http://"+window.location.host+""+data.url+"</a></p>");
-    _me.dom.append("<pre>"+app.Y.JSON.stringify(data.data,null,'&nbsp;&nbsp;')+"</pre>");
+    _me.dom.append("<pre>"+app.Y.JSON.stringify(data.data,null,'  ')+"</pre>");
   });
   app.on('api-loader:api-data-error', function(data){
     _me.dom._node.innerHTML = "";

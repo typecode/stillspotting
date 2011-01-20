@@ -8,6 +8,7 @@ import hashlib
 import connections.nyt.article
 import connections.nyt.community
 import connections.nyc311.noiseComplaints
+import connections.flickr.photos.search
 import connections.flickr.photos.geo.photosForLocation
 
 sys.path.append("lib")
@@ -58,6 +59,10 @@ connections = {
     'api_key':'9ce620aec9b49f8de2cafa5144ab3876',
     'secret':'05b101b95c7e75d6',
     'disabled':True
+  }),
+  'flickrsearch': connections.flickr.photos.search.Search({
+    'api_key':'9ce620aec9b49f8de2cafa5144ab3876',
+    'secret':'05b101b95c7e75d6'
   }),
   'flickrimages': connections.flickr.photos.geo.photosForLocation.PhotosForLocation({
     'api_key':'9ce620aec9b49f8de2cafa5144ab3876',
