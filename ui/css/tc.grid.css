@@ -2,7 +2,7 @@
 	grid
 	
 	Example markup:
-	<div class="grid">
+	<div class="grid xFull">
 		<div class="column x8">
 			<div class="column x2">
 				...
@@ -24,9 +24,8 @@
 	visibility:hidden; line-height:0; height:0; 
 }
 .grid { 
-	position:relative; clear:both; 
+	position:relative; display:inline-block;
 	margin:auto; text-align:left; 
-	display:inline-block;
 }
 html[xmlns] .grid { display:block; }
 * html .grid { zoom:1; }
@@ -35,24 +34,36 @@ html[xmlns] .grid { display:block; }
 .column-r { float:right; display:inline; }
 
 /*----- widths -----*/
-
-.x1 { }
-.x2 { }
-.x3 { }
-.x4 { }
-.x5 { }
-.x6 { }
-.x7 { }
-.x8 { }
-.x9 { }
-.x10 { }
-.x11 { }
-.xFull { }
+	/* --- In this scheme, the fixed width columns 
+	       are all pushed against one another, and so
+	       are not expected to have any margins or padding.
+		*/
+		
+.x1 { width:122px; }
+.x2 { width:244px; }
+.x3 { width:366px; }
+.x4 { width:488px; }
+.x5 { width:610px; }
+.x6 { width:732px; }
+.x7 { width:854px; }
+.xFull { width:976px; clear:both; }
 
 /*----- gutters -----*/
+	/* --- In this scheme, the fixed width columns
+	       are spaced apart by a margin (so "widths" section
+	       should be adjusted accordingly). The margin is
+	       set on the side towards which the column is
+	       floating, thus pushing it away from any preceding
+	       columns. The first-child selector is used to
+	       zero out the margin on the farthest floated column.
+	       This allows for arbitrary nesting of columns.
+		*/
 
 .column { /*margin-left: ;*/ }
 .column:first-child { margin-left:0; }
 
 .column-r { /*margin-right: ;*/ }
 .column-r:first-child { margin-right:0; }
+
+.column.xFull,
+.column-r.xFull { margin-left:0; margin-right:0; }
