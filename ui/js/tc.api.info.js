@@ -2,13 +2,20 @@ if(!tc){ var tc = {}; }
 
 tc.api.info = makeClass();
 
-tc.api.info.prototype.markup = "<div class='api-info'></div>";
+tc.api.info.prototype.markup = "<div class='api-info'>\
+  <div class='hd'></div>\
+  <div class='bd'></div>\
+  <div class='ft'></div>\
+</div>";
 
 tc.api.info.prototype.init = function(app,options){
   tc.util.log('tc.api.info.prototype.init');
   this.api_info = null;
   this.dom = app.Y.Node.create(this.markup);
-  app.dom.append(this.dom);
+  if(options.width){
+    this.dom.addClass(options.width).addClass('column');
+  }
+  app.Y.one(options.target_element).append(this.dom);
   this.setup_events();
   this.get_info(); 
 }
@@ -54,14 +61,14 @@ tc.api.info.prototype.render_info_for = function(api){
   }
   _me = this;
   
-  this.dom._node.innerHTML = "";
-  this.dom.append('<h2>'+this.api_info[api].name+'</h2>');
-  this.dom.append('<p>'+this.api_info[api].description+'</p><br />');
+  this.dom.one('.bd')._node.innerHTML = "";
+  this.dom.one('.bd').append('<h2>'+this.api_info[api].name+'</h2>');
+  this.dom.one('.bd').append('<p>'+this.api_info[api].description+'</p><br />');
   if(this.api_info[api].authorized === false){
-    this.dom.append('<p>You must <a href="/api/'+api+'/auth/">authenticate</a> to use this API.</p><br />');
+    this.dom.one('.bd').append('<p>You must <a href="/api/'+api+'/auth/">authenticate</a> to use this API.</p><br />');
   }
   
-  this.dom.append('<p><a href="#" class="pop_default">◀ Populate Default Query</a></p><br />');
+  this.dom.one('.bd').append('<p><a href="#" class="pop_default">◀ Populate Default Query</a></p><br />');
   this.dom.one('.pop_default').on('click',function(event){
     var code, i;
     event.preventDefault();
@@ -72,7 +79,7 @@ tc.api.info.prototype.render_info_for = function(api){
   
   app.fire('api-info:api-code-generated',{code:app.Y.JSON.stringify(_me.api_info[api].example_query,null,"\t")});
   
-  this.dom.append('<p>Query Parameters:</p><br />');
+  this.dom.one('.bd').append('<p>Query Parameters:</p><br />');
   parameters_table = app.Y.Node.create('<table class="parameter_table">\
   </table>');
   for(i in this.api_info[api].default_pars){
@@ -94,6 +101,6 @@ tc.api.info.prototype.render_info_for = function(api){
       </tr>\
     </tbody>')
   }
-  this.dom.append(parameters_table);
+  this.dom.one('.bd').append(parameters_table);
   //this.dom.append('<pre>'+app.Y.JSON.stringify(this.api_info[api].default_pars,null,'&nbsp;&nbsp;')+'</pre>');
 }

@@ -2,6 +2,7 @@ import sys
 import urllib
 import datetime
 import hashlib
+import csv
 
 import connections.connection
 
@@ -26,11 +27,13 @@ class Article(connections.connection.Connection):
       'more_info':'http://developer.nytimes.com/docs/read/article_search_api#h2-responses'},
     'offset':{'accepted':'Number of Records to offset by.','default':0,'required':False},
     'rank':{'accepted':'newest, oldest, closest','default':'newest','required':False},
-    'n_to_fetch':{'accepted':"Number of items to fetch",'default':10,'required':False}
+    'n_to_fetch':{'accepted':"Number of items to fetch",'default':10,'required':False},
+    'output':{'accepted':'json, csv','default':'csv','required':'true'}
   }
   example_query = {
     'query':"abstract:noise geo_facet:[NEW YORK CITY]",
-    'fields':"title,abstract,geo_facet"
+    'fields':"title,abstract,geo_facet",
+    'output':'csv'
   }
 #### END CONNECTION-SPECIFIC MEMBERS
   
@@ -38,28 +41,41 @@ class Article(connections.connection.Connection):
   request_queue_stopped = True
   request_queue_timer = None
   
-  n_requests = 1
-  n_requests_received = 0
-  
   def process_request(self,user,req_id,pars):
     print 'connections.nyt.article.Article.process_request'
     http = tornado.httpclient.AsyncHTTPClient()
     
-    output = []
+    n_requests = 1
+    n_requests_received = 0
+    output = None
     
     if 'n_to_fetch' in pars and pars['n_to_fetch'] is not None and float(pars['n_to_fetch']) > 10:
-      self.n_requests = math.ceil(float(pars['n_to_fetch'])/10.0)
+      n_requests = math.ceil(float(pars['n_to_fetch'])/10.0)
     
     def handle_response(response):
-      self.n_requests_received = self.n_requests_received + 1
+      n_requests_received = n_requests_received + 1
+      
       try:
-        json = tornado.escape.json_decode(response.body)
-        output.append(json)
+        data = tornado.escape.json_decode(response.body)
       except TypeError, ValueError:
         print str(response.body)
-        pass
+      
+      if 'output' in pars:
+        if pars['output'] == 'csv':
+          if self.output is None:
+            self.output = ""
+          self.output = self.output + self.generate_csv_rows(data)
+        else:
+          if self.output is None:
+            self.output = []
+          self.output.append(data)
+      else:
+        if self.output is None:
+            self.output = []
+        self.output.append(data)
+          
       if self.n_requests_received == self.n_requests:
-        self.emit_api_response(req_id,output)
+        self.emit_api_response(req_id,self.output)
       else:
         self.run_queue()
     
@@ -77,7 +93,7 @@ class Article(connections.connection.Connection):
       request['url'] = url
       return request
     
-    for i in range(0,int(self.n_requests)):
+    for i in range(0,int(n_requests)):
       if 'offset' in pars and pars['offset'] is not None:
         self.add_to_queue(generate_request(int(pars['offset'])+(i)))
       else:
@@ -104,6 +120,12 @@ class Article(connections.connection.Connection):
       return
     item = self.request_queue.pop(0)
     http.fetch(item['url'],callback=item['callback'])
+  
+  def generate_csv_rows(self,data):
+    print 'connections.nyt.article.Article.generate_csv_rows'
+    for i in data:
+      print i
+      print data[i]
   
   #DEPRECATED
   def getArticleByUrl(self,req_id,query_url):

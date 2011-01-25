@@ -39,14 +39,25 @@ html[xmlns] .grid { display:block; }
 	       are not expected to have any margins or padding.
 		*/
 		
-.x1 { width:122px; }
+/*.x1 { width:122px; }
 .x2 { width:244px; }
 .x3 { width:366px; }
 .x4 { width:488px; }
 .x5 { width:610px; }
 .x6 { width:732px; }
 .x7 { width:854px; }
-.xFull { width:976px; clear:both; }
+.x8 { width:976px; }
+.xFull { width:976px; clear:both; }*/
+
+.x1 { width:112px; }
+.x2 { width:234px; }
+.x3 { width:356px; }
+.x4 { width:478px; }
+.x5 { width:600px; }
+.x6 { width:722px; }
+.x7 { width:844px; }
+.x8 { width:966px; }
+.xFull { width:966px; clear:both; }
 
 /*----- gutters -----*/
 	/* --- In this scheme, the fixed width columns
@@ -59,10 +70,10 @@ html[xmlns] .grid { display:block; }
 	       This allows for arbitrary nesting of columns.
 		*/
 
-.column { /*margin-left: ;*/ }
+.column { margin-left:10px ; }
 .column:first-child { margin-left:0; }
 
-.column-r { /*margin-right: ;*/ }
+.column-r { margin-right:10px; }
 .column-r:first-child { margin-right:0; }
 
 .column.xFull,

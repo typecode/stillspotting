@@ -59,7 +59,8 @@ class Connection:
   
   def process_request(self,user,req_id,pars):
     print 'connections.Connection.process_request'
-    self.emit_api_response(req_id,{'Generic Output':123456789})
+    output = {'Generic Output':123456789}
+    self.emit_api_response(req_id,json.dumps(output,default=pymongo.json_util.default))
   
   def make_api_request(self,user,req_id,handler,pars=None):
     print 'connections.Connection.make_api_request'

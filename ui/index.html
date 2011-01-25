@@ -25,6 +25,7 @@
   
   <link rel="stylesheet" href="./css/tc.reset.css" type="text/css" media="all"/>
   <link rel="stylesheet" href="./css/tc.app.css" type="text/css" media="all"/>
+  <link rel="stylesheet" href="./css/tc.grid.css" type="text/css" media="all"/>
   
   <!-- Uncomment if you are specifically targeting less enabled mobile browsers
   <link rel="stylesheet" media="handheld" href="css/handheld.css?v=2">  -->
@@ -35,7 +36,12 @@
 
 <body>
 
-  <div id='app'></div>
+  <div id='app' class="grid xFull">
+    
+    <div class='column xFull tier' id='form_tier'></div>
+    <div class='column xFull tier' id='results_tier'></div>
+    
+  </div>
       
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
   <script>!window.jQuery && document.write(unescape('%3Cscript src="js/libs/jquery-1.4.2.js"%3E%3C/script%3E'))</script>

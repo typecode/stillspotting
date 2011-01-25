@@ -23,10 +23,20 @@ var app = {
     switch(options.view){
       case 'api':
         app.api = new tc.api(app,{});
-        app.api.form = new tc.api.form(app,{});
-        app.api.info = new tc.api.info(app,{});
+        app.api.form = new tc.api.form(app,{
+          width:'x3',
+          target_element:'#form_tier'
+        });
+        app.api.info = new tc.api.info(app,{
+          width:'x3',
+          target_element:'#form_tier'
+        });
         app.api.loader = new tc.api.loader(app,{});
-        app.api.results = new tc.api.results(app,{});
+        app.api.results = new tc.api.results(app,{
+          width:'xFull',
+          target_element:'#results_tier'
+        });
+        tc.util.dump(app.api.results);
         break;
       case 'map':
         app.map = new tc.gmap(app,{});

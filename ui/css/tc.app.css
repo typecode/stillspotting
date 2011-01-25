@@ -1,16 +1,37 @@
 
-body{ height:100%;width:100%; position:relative; background-color:#ebf0d6; }
 
-::-moz-selection{ background: #40909C; color:#fff; text-shadow: none; }
-::selection { background:#40909C; color:#fff; text-shadow: none; }
+/*
+  dark: #2F2933
+  dark blue: #01A2A6
+  light blue: #29D9C2
+  green: #BDF271
+  light green: #FFFFA6
+*/
 
-#app{ height:100%;width:100%; color:#193451; }
+body{ height:100%;width:100%; position:relative; background-color:white;
+  text-align:left; }
+
+select{
+  padding:2px;
+}
+
+::-moz-selection{ background: #BDF271; color:#fff; text-shadow: none; }
+::selection { background:#BDF271; color:#fff; text-shadow: none; }
+
+#app{
+ color:#2F2933;
+ padding:10px;
+}
+
+.tier{
+  margin-bottom:10px;
+}
+
 
 #query{
   position:absolute;
   z-index:9999;
   background-color:white;
-  padding:10px;
   left:200px;
 }
 #query a{ font-size:14px; font-style:italic; margin-left:7px; }
@@ -48,100 +69,54 @@ body{ height:100%;width:100%; position:relative; background-color:#ebf0d6; }
 
 #map .canvas{ position:absolute; }
 
+.api-form{
+  font-size:12px;
+  text-align:left;
+  background-color:white;
+  display:block;
+  height:300px;
+  border:1px solid #2F2933;
+}
+  .api-form .bd{
+    margin:10px;
+  }
+  .api-form .CodeMirror-wrapping{
+    border:1px solid #2F2933;
+    margin-bottom:5px;
+  }
+  .api-form .ft{
+    
+  }
+    .api-form .ft .left{
+      float:left;
+    }
+    .api-form .bd .right{
+      float:right;
+    }
+  
 .api-info{
   font-size:12px;
   text-align:left;
   background-color:white;
   display:block;
-  float:left;
-  width:40.5%;
-  margin:1% 0% 1% 0%;
-  padding:10px;
-  border-top:1px solid #40909C;
-  border-left:1px solid #40909C;
-  border-right:2px solid #40909C;
-  border-bottom:2px solid #40909C;
-  height:395px;
+  height:300px;
   overflow-y:scroll;
+  border:1px solid #2F2933;
 }
+  .api-info .bd{
+    margin:10px;
+  }
 
 .api-results{
   font-size:12px;
   text-align:left;
   background-color:white;
-  display:block;
-  clear:both;
-  float:left;
-  width:94%;
-  margin:0% 1% 1% 1%;
-  padding:10px;
-  border-top:1px solid #40909C;
-  border-left:1px solid #40909C;
-  border-right:2px solid #40909C;
-  border-bottom:2px solid #40909C;
+  min-height:10px;
+  border:1px solid #2F2933;
 }
-
-form.api-form{
-  float:left;
-  font-size:12px;
-  text-align:left;
-  background-color:white;
-  display:block;
-  width:50%;
-  margin:1% 1% 0% 1%;
-  padding:10px;
-  border-top:1px solid #40909C;
-  border-left:1px solid #40909C;
-  border-right:2px solid #40909C;
-  border-bottom:2px solid #40909C;
-  height:395px;
-}
-
-form.api-form table{
-  width:100%;
-}
-
-form.api-form table tr{
-  
-}
-
-form.api-form table tr th,
-form.api-form table tr td{
-  padding-bottom:5px;
-}
-
-form.api-form table tr th{
-  vertical-align:top;
-  text-align:left;
-}
-
-form.api-form table tr td{
-  vertical-align:top;
-  text-align:right;
-}
-
-form.api-form table tr td p.okay{
-  color:green;
-}
-
-form.api-form table tr td p.error{
-  color:red;
-}
-
-form.api-form table tr td textarea,
-form.api-form table tr td select{
-  width:100%;
-}
-
-form.api-form table tr td input{margin:5px;}
-
-form.api-form table tr td textarea{ width:300px; }
-
-form.api-form table tr td.codemirror{ border:1px solid #ebf0d6; }
-
-form.api-form table tr td select{
-  padding:2px;
-}
+  .api-results .bd{
+    margin:10px;
+  }
 
 table.parameter_table{ 
   width:100%;

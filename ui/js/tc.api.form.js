@@ -2,13 +2,13 @@ if(!tc){ var tc = {}; }
 
 tc.api.form = makeClass();
 
-tc.api.form.prototype.markup = "<form class='api-form'>\
-    <table>\
-      <tr>\
-        <th width='30%'></th>\
-        <td width='70%'></td>\
-    </table>\
-  </form>";
+tc.api.form.prototype.markup = "<div class='api-form'>\
+  <div class='hd'></div>\
+  <div class='bd'>\
+    <form></form>\
+  </div>\
+  <div class='ft'></div>\
+</div>";
 
 tc.api.form.prototype.init = function(app,options){
   tc.util.log('tc.api.form.prototype.init');
@@ -23,11 +23,14 @@ tc.api.form.prototype.init = function(app,options){
   this.codemirror = null;
   this.submit_button = null;
   this.dom = app.Y.Node.create(this.markup);
-  this.table = this.dom.one('table');
-  this.table.one('tbody').append(this.build_api_selector());
-  this.table.one('tbody').append(this.build_json_input());
-  this.table.one('tbody').append(this.build_submit_button());
-  app.dom.append(this.dom);
+  if(options.width){
+    this.dom.addClass(options.width).addClass('column');
+  }
+  this.form_content = this.dom.one('form');
+  this.form_content.append(this.build_api_selector());
+  this.form_content.append(this.build_json_input());
+  this.form_content.append(this.build_submit_button());
+  app.Y.one(options.target_element).append(this.dom);
   
   this.setup_events();
   
@@ -85,14 +88,11 @@ tc.api.form.prototype.setup_events = function(){
 tc.api.form.prototype.build_api_selector = function(){
   tc.util.log('tc.api.form.prototype.build_api_selector');
   var element;
-  element = app.Y.Node.create("<tr>\
-    <th>\
-      <label>Select an API:</label>\
-    </th>\
-    <td>\
-      <select></select>\
-    </td>\
-  </tr>");
+  element = app.Y.Node.create("<div>\
+    <label>Select an API:</label>\
+    <br />\
+    <select></select>\
+  </div>");
   this.api_selector = element.one('select');
   return element;
 }
@@ -110,20 +110,11 @@ tc.api.form.prototype.populate_api_selector = function(data){
 tc.api.form.prototype.build_json_input = function(){
   tc.util.log('tc.api.form.prototype.build_json_input');
   var element;
-  element = app.Y.Node.create("<tr>\
-    <th>\
-      <label>Create your query:</label>\
-    </th>\
-    <td class='codemirror'>\
-      <textarea class='editor'></textarea>\
-    </td>\
-  </tr>\
-  <tr>\
-    <th></th>\
-    <td>\
-      <p class='editor_status'></p>\
-    </td>\
-  </tr>");
+  element = app.Y.Node.create("<div>\
+    <label>Create your query:</label>\
+    <textarea class='editor'></textarea>\
+    <p class='editor_status right'></p>\
+  </div>");
   this.editor = element.one('.editor');
   this.editor_status = element.one('.editor_status');
   return element;
@@ -139,7 +130,8 @@ tc.api.form.prototype.construct_codemirror = function(loadcallback,changecallbac
     reindentOnLoad:true,
     indentUnit:0,
     onLoad:loadcallback,
-    onChange:changecallback
+    onChange:changecallback,
+    height:'200px'
   });
   return codemirror;
 }
@@ -147,12 +139,9 @@ tc.api.form.prototype.construct_codemirror = function(loadcallback,changecallbac
 tc.api.form.prototype.build_submit_button = function(){
   tc.util.log('tc.api.form.prototype.build_submit_button');
   var element;
-  element = app.Y.Node.create("<tr>\
-    <th></th>\
-    <td>\
+  element = app.Y.Node.create("<div>\
       <input class='submit-button' type='submit' value='Run Query'></input>\
-    </td>\
-  </tr>");
+  </div>");
   this.submit_button = element.one('input');
   return element;
 }
