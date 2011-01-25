@@ -8,6 +8,9 @@ import datetime
 
 sys.path.append("lib")
 import tornado.httpclient
+import json
+import pymongo
+import pymongo.json_util
 
 class Connection:
   
@@ -57,17 +60,17 @@ class Connection:
     info['example_query'] = self.example_query
     return info
   
-  def process_request(self,user,req_id,pars):
+  def process_request(self,apirequest):
     print 'connections.Connection.process_request'
-    output = {'Generic Output':123456789}
-    self.emit_api_response(req_id,json.dumps(output,default=pymongo.json_util.default))
+    data = {'Generic Output':123456789}
+    apirequest.handle_data(data)
   
-  def make_api_request(self,user,req_id,handler,pars=None):
+  def make_api_request(self,apirequest):
     print 'connections.Connection.make_api_request'
-    if req_id in self.buffers and len(self.buffers[req_id]) > 0:
-      return self.buffers[req_id]
-    self.listeners[req_id] = handler
-    self.process_request(user,req_id,self.handle_pars(pars))
+    if apirequest.requestid in self.buffers and len(self.buffers[apirequest.requestid]) > 0:
+      return self.buffers[apirequest.requestid]
+    self.listeners[apirequest.requestid] = apirequest.handle_data
+    self.process_request(apirequest)
     
   def handle_pars(self,pars):
     print 'connections.Connection.handle_pars'
@@ -102,3 +105,8 @@ class Connection:
     if req_id in self.listeners:
       self.listeners[req_id] = None
       del self.listeners[req_id]
+      
+  @staticmethod
+  def json(data):
+    print 'connections.Connection.json'
+    return data

@@ -55,9 +55,17 @@ tc.api.info.prototype.get_info = function(){
 tc.api.info.prototype.render_info_for = function(api){
   tc.util.log('tc.api.info.prototype.render_info_for');
   var _me, parameters_table, i, par;
+  
+  if(api.length == 0){
+    this.dom.one('.bd')._node.innerHTML = "";
+    this.dom.one('.bd').append('<h2>Getting Started</h2><br/>');
+    this.dom.one('.bd').append('<p>◀ Get started by selecting an API/Data Source to the left.</p><br />');
+    return;
+  }
+  
   if(!this.api_info){ return; }
-  if(!this.api_info[api]){ 
-    return; 
+  if(!this.api_info[api]){
+    return;
   }
   _me = this;
   

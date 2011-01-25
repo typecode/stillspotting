@@ -33,7 +33,8 @@ class Article(connections.connection.Connection):
   example_query = {
     'query':"abstract:noise geo_facet:[NEW YORK CITY]",
     'fields':"title,abstract,geo_facet",
-    'output':'csv'
+    'output':'csv',
+    'n_to_fetch':100
   }
 #### END CONNECTION-SPECIFIC MEMBERS
   
@@ -41,51 +42,32 @@ class Article(connections.connection.Connection):
   request_queue_stopped = True
   request_queue_timer = None
   
-  def process_request(self,user,req_id,pars):
+  def process_request(self,apirequest):
     print 'connections.nyt.article.Article.process_request'
     http = tornado.httpclient.AsyncHTTPClient()
     
-    n_requests = 1
-    n_requests_received = 0
-    output = None
+    if 'n_to_fetch' in apirequest.pars and apirequest.pars['n_to_fetch'] is not None and float(apirequest.pars['n_to_fetch']) > 10:
+      apirequest.run['n_requests'] = math.ceil(float(apirequest.pars['n_to_fetch'])/10.0)
     
-    if 'n_to_fetch' in pars and pars['n_to_fetch'] is not None and float(pars['n_to_fetch']) > 10:
-      n_requests = math.ceil(float(pars['n_to_fetch'])/10.0)
+    print apirequest.run['n_requests']
     
     def handle_response(response):
-      n_requests_received = n_requests_received + 1
-      
+      print 'connections.nyt.article.Article.process_request.handle_response'
       try:
         data = tornado.escape.json_decode(response.body)
       except TypeError, ValueError:
-        print str(response.body)
-      
-      if 'output' in pars:
-        if pars['output'] == 'csv':
-          if self.output is None:
-            self.output = ""
-          self.output = self.output + self.generate_csv_rows(data)
-        else:
-          if self.output is None:
-            self.output = []
-          self.output.append(data)
-      else:
-        if self.output is None:
-            self.output = []
-        self.output.append(data)
-          
-      if self.n_requests_received == self.n_requests:
-        self.emit_api_response(req_id,self.output)
-      else:
-        self.run_queue()
+        apirequest.handle_error('NYT Error')
+      apirequest.handle_data(data)
+      self.run_queue()
     
     def generate_request(offset):
+      print 'connections.nyt.article.Article.process_request.generate_request'
       request = {}
       request['pars'] = {}
       request['callback'] = handle_response
       for i in ['query','begin_date','end_date','facets','fields','offset','rank']:
-        if i in pars:
-          request['pars'][i] = pars[i]
+        if i in apirequest.pars:
+          request['pars'][i] = apirequest.pars[i]
           request['pars']['offset'] = offset
           request['pars']['api-key'] = self.settings['api_key']
       url = 'http://api.nytimes.com/svc/search/v1/article?'
@@ -93,11 +75,35 @@ class Article(connections.connection.Connection):
       request['url'] = url
       return request
     
-    for i in range(0,int(n_requests)):
-      if 'offset' in pars and pars['offset'] is not None:
-        self.add_to_queue(generate_request(int(pars['offset'])+(i)))
+    for i in range(0,int(apirequest.run['n_requests'])):
+      if 'offset' in apirequest.pars and apirequest.pars['offset'] is not None:
+        self.add_to_queue(generate_request(int(apirequest.pars['offset'])+(i)))
       else:
         self.add_to_queue(generate_request(i))
+  
+  ################### END process_request
+  
+  @staticmethod
+  def csv(data):
+    print 'connections.nyt.article.Article.csv'
+    generate_header = False
+    header = None
+    output = ""
+    for i in data:
+      if u'results' in i:
+        for j in i[u'results']:
+          row = []
+          if header is None:
+              generate_header = True
+              header = []
+          for k in j:
+            if generate_header is True:
+              header.append(str(k))
+            row.append('"'+str(j[k])+'"')
+          output = output + str('\t'.join(row)) + '\n'
+          generate_header = False
+    output = str('\t'.join(header)) + '\n' + output
+    return output
   
   def add_to_queue(self,item):
     print 'connections.nyt.article.Article.add_to_queue'
@@ -120,47 +126,3 @@ class Article(connections.connection.Connection):
       return
     item = self.request_queue.pop(0)
     http.fetch(item['url'],callback=item['callback'])
-  
-  def generate_csv_rows(self,data):
-    print 'connections.nyt.article.Article.generate_csv_rows'
-    for i in data:
-      print i
-      print data[i]
-  
-  #DEPRECATED
-  def getArticleByUrl(self,req_id,query_url):
-    print 'Article.getArticleByUrl'
-    http = tornado.httpclient.AsyncHTTPClient()
-    
-    pars = {
-      'query':'url:'+query_url,
-      'facets':'geo_facet',
-      'api-key':self.article_api_key
-    }
-    url = 'http://api.nytimes.com/svc/search/v1/article?'
-    url = url + urllib.urlencode(pars)
-    
-    def handle_response(response):
-      print 'getArticleByUrl.on_response'
-      json = tornado.escape.json_decode(response.body)
-      self.emit(req_id,json)
-    
-    http.fetch(url,callback=handle_response)
-  
-  #DEPRECATED
-  def listen(self,req_id,handler):
-    print 'Article.listen'
-    self.listeners[req_id] = handler
-    return []
-    
-  #DEPRECATED
-  def emit(self,req_id,data):
-    print 'Article.emit'
-    if req_id in self.listeners and self.listeners[req_id] is not None:
-      self.listeners[req_id]({'articles':data})
-  
-  #DEPRECATED
-  def stopListening(self,req_id):
-    print 'Article.stopListening'
-    if req_id in self.listeners:
-      self.listeners[req_id] = None

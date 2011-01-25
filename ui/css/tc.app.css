@@ -8,7 +8,9 @@
   light green: #FFFFA6
 */
 
-body{ height:100%;width:100%; position:relative; background-color:white;
+body{ height:100%;width:100%; position:relative;
+  background-image:url(../images/BG.gif);
+  background-repeat:repeat;
   text-align:left; }
 
 select{
@@ -17,6 +19,10 @@ select{
 
 ::-moz-selection{ background: #BDF271; color:#fff; text-shadow: none; }
 ::selection { background:#BDF271; color:#fff; text-shadow: none; }
+
+
+h1 { font-size:40px;  }
+h1 span { font-size:20px;margin-left:-10px; }
 
 #app{
  color:#2F2933;

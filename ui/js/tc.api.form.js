@@ -104,7 +104,7 @@ tc.api.form.prototype.populate_api_selector = function(data){
   for(i in data){
     this.api_selector.append('<option value="'+i+'">'+data[i].name+'</option>');
   }
-  this.api_selector.fire('change');
+  app.fire('api-form:api-selected',{api:''});
 }
 
 tc.api.form.prototype.build_json_input = function(){

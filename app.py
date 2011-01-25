@@ -45,7 +45,7 @@ print ''
 connections = {
   'generic' : connections.connection.Connection({
     'database':database,
-    'disabled':True
+    'disabled':False
   }),
   'nytarticle': connections.nyt.article.Article({
     'api_key':'1b9f2c309a5bb7426b1aa181b2f1a1cc:13:62473522'
@@ -77,9 +77,6 @@ tornado_settings = {
 }
 
 application = tornado.web.Application([
-  (r"/article/community", views.article.comments),
-  (r"/article/updates", views.article.updates),
-  (r"/geoitem/bounds/(.*)/(.*)/(.*)/", views.geoitem.bounds),
   (r"/api/info/", views.api.info,dict(connections=connections)),
   (r"/api/(.*)/auth/", views.api.auth,dict(connections=connections)),
   (r"/api/(.*)/authenticated/", views.api.authenticated,dict(connections=connections)),

@@ -7,6 +7,8 @@ import random
 import string
 import time
 
+import models.apirequest
+
 import views.handler
 
 sys.path.append("lib")
@@ -69,8 +71,7 @@ class api(views.handler.handler):
   
   def initialize(self,connections={}):
     print '-views.api.api.init'
-    self.request_id = None
-    self.api = None
+    self.apirequest = None
     self.connections = connections
   
   @tornado.web.authenticated
@@ -80,34 +81,43 @@ class api(views.handler.handler):
     print ' |api: '+str(api)
     if not api or api not in self.connections:
       raise tornado.web.HTTPError(404)
-    self.api = api
-    random.seed(time.clock())
-    self.request_id = "".join([random.choice(string.letters+string.digits) for x in xrange(32)])
-    self.pars = {}
+    pars = {}
     for i in self.request.arguments:
-      self.pars[i] = self.request.arguments[i][0]
-    print ' |self.request_id: '+str(self.request_id)
-    print ' |self.query_parameters: '+str(self.pars)
-    output_buffer = self.connections[self.api].make_api_request(self.current_user,self.request_id,self.out,self.pars)
-    if output_buffer is not None and len(output_buffer) > 0:
-      self.out(output_buffer)
+      pars[i] = self.request.arguments[i][0]
+    self.apirequest = models.apirequest.APIRequest(self.current_user,self.connections[api],pars,self.out,self.error)
+    print ' |self.request_id: '+str(self.apirequest.requestid)
+    print ' |self.query_parameters: '+str(self.apirequest.pars)
+    print ''
+    self.apirequest.start()
   
   def on_connection_close(self):
     print '-views.api.api.on_connection_close'
-    print ' |self.request_id: '+str(self.request_id)
+    print ' |self.request_id: '+str(self.apirequest.requestid)
     print ''
-    self.connections[self.api].end_request(self.request_id)
+    self.connections[self.apirequest.api].end_request(self.apirequest.requestid)
   
   def out(self,data):
     print '-views.api.api.out'
-    print ' |api: '+str(self.api)
-    print ' |self.request_id: '+str(self.request_id)
-    #print ' |data: '+str(data)
+    print ' |api: '+str(self.apirequest.api.name)
+    print ' |self.request_id: '+str(self.apirequest.requestid)
+    print ''
     output = {
-      'request_id':self.request_id,
+      'format':self.apirequest.pars['output'],
+      'request_id':self.apirequest.requestid,
       'data':data
     }
-    self.connections[self.api].end_request(self.request_id)
     self.write(json.dumps(output,default=pymongo.json_util.default))
     self.finish()
   
+  def error(self,error):
+    print '-views.api.api.error'
+    print ' |api: '+str(self.apirequest.api.name)
+    print ' |self.request_id: '+str(self.apirequest.requestid)
+    print ''
+    output = {
+      'error':True,
+      'request_id':self.apirequest.requestid,
+      'message':error
+    }
+    self.write(json.dumps(output,default=pymongo.json_util.default))
+    self.finish()

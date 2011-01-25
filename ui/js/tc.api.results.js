@@ -29,7 +29,9 @@ tc.api.results.prototype.setup_events = function(){
   app.on('api-loader:api-data-success', function(data){
     _me.dom.one('.bd')._node.innerHTML = "";
     _me.dom.one('.bd').append("<p>Loaded: <a href='http://"+window.location.host+""+data.url+"'>http://"+window.location.host+""+data.url+"</a></p>");
-    _me.dom.one('.bd').append("<pre>"+app.Y.JSON.stringify(data.data,null,'  ')+"</pre>");
+    //_me.dom.one('.bd').append("<pre>"+app.Y.JSON.stringify(data.data,null,'  ')+"</pre>");
+    console.log(data.data.data)
+    _me.dom.one('.bd').append("<pre>"+data.data.data+"</pre>");
   });
   app.on('api-loader:api-data-error', function(data){
     _me.dom.one('.bd')._node.innerHTML = "";
