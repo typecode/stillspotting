@@ -58,14 +58,9 @@ class APIRequest():
     output = self.output
     if 'output' in self.pars:
       format = self.pars['output']
-    print format
-    print self.api
     if hasattr(self.api,format):
       print 'we have it'
       output = getattr(self.api,format)(self.output)
-    
-    print '\n\r\n\r'
-    print output
     self.api.end_request(self.requestid)
     self.emitter(output)
   
