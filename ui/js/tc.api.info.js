@@ -60,6 +60,20 @@ tc.api.info.prototype.render_info_for = function(api){
     this.dom.one('.bd')._node.innerHTML = "";
     this.dom.one('.bd').append('<h2>Getting Started</h2><br/>');
     this.dom.one('.bd').append('<p>◀ Get started by selecting an API/Data Source to the left.</p><br />');
+    this.dom.one('.bd').append('<p class="italic">Keep in mind:</p>');
+    this.dom.one('.bd').append('<p class="padded">&para;&nbsp;Certain API requests might take a few moments to complete. As a general rule, the greater the number of results you request, the longer the request will take. \
+      &para;&nbsp;Certain APIs may require authentication to retrieve your and your friend\'s information, tweets, checkins, etc. \
+      &para;&nbsp;The CSV Output is formatted with tabs (\\t) seperating values, and newlines (\\n) seperating rows. \
+      &para;&nbsp;The Data Tool is still a work in progress. Things may behave erratically, but will evolve quickly. \
+      &para;&nbsp;Please get in touch with questions comments suggestions: amahon[at]gmail.com. \
+    </p><br />');
+    this.dom.one('.bd').append('<p class="italic">On the way:</p>');
+    this.dom.one('.bd').append('<p class="padded">&para;&nbsp;More API connections: Foursquare, Facebook. \
+      &para;&nbsp;More thorough API results data in CSV output. \
+      &para;&nbsp;Better documentation. \
+      &para;&nbsp;You tell me!\
+    </p>');
+    //this.dom.one('.bd').append('<p>&raquo;Certian APIs may require authentication.</p>');
     return;
   }
   
@@ -73,10 +87,10 @@ tc.api.info.prototype.render_info_for = function(api){
   this.dom.one('.bd').append('<h2>'+this.api_info[api].name+'</h2>');
   this.dom.one('.bd').append('<p>'+this.api_info[api].description+'</p><br />');
   if(this.api_info[api].authorized === false){
-    this.dom.one('.bd').append('<p>You must <a href="/api/'+api+'/auth/">authenticate</a> to use this API.</p><br />');
+    this.dom.one('.bd').append('<p class="alert">You must <a href="/api/'+api+'/auth/">authenticate</a> to use this API.</p><br />');
   }
   
-  this.dom.one('.bd').append('<p><a href="#" class="pop_default">◀ Populate Default Query</a></p><br />');
+  this.dom.one('.bd').append('<p><a href="#" class="pop_default">◀ Populate Example Query</a></p><br />');
   this.dom.one('.pop_default').on('click',function(event){
     var code, i;
     event.preventDefault();
@@ -110,5 +124,9 @@ tc.api.info.prototype.render_info_for = function(api){
     </tbody>')
   }
   this.dom.one('.bd').append(parameters_table);
+  if(this.api_info[api].source){
+    this.dom.one('.bd').append('<p class="italic">(Source: <a href="'+this.api_info[api].source+'">'+this.api_info[api].source+'</a>)</p>');
+  }
+  
   //this.dom.append('<pre>'+app.Y.JSON.stringify(this.api_info[api].default_pars,null,'&nbsp;&nbsp;')+'</pre>');
 }

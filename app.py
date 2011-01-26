@@ -10,6 +10,8 @@ import connections.nyt.community
 import connections.nyc311.noiseComplaints
 import connections.flickr.photos.search
 import connections.flickr.photos.geo.photosForLocation
+import connections.twitter.twitterConnection
+import connections.twitter.search
 
 sys.path.append("lib")
 import tornado.httpserver
@@ -83,6 +85,13 @@ connections = {
     'api_key':config[u'flickrApiKey'],
     'secret':config[u'flickrApiSecret'],
     'disabled':True
+  }),
+  'twitter': connections.twitter.twitterConnection.TwitterConnection({
+    'api_key':'KJe6u0UIiI3HKPq2YBoVsw',
+    'disabled':True
+  }),
+  'twitter_search': connections.twitter.search.Search({
+  
   })
 }
 

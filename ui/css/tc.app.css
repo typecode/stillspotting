@@ -5,6 +5,7 @@
   dark blue: #01A2A6
   light blue: #29D9C2
   green: #BDF271
+  orange:#ff7600
   light green: #FFFFA6
 */
 
@@ -23,6 +24,17 @@ select{
 
 h1 { font-size:40px;  }
 h1 span { font-size:20px;margin-left:-10px; }
+
+.byline { float:right; font-size:12px; font-style:italic; }
+
+#header_tier{
+  position:relative;
+}
+  #header_tier .byline{
+    position:absolute;
+    right:0px;
+    top:24px;
+  }
 
 #app{
  color:#2F2933;
@@ -111,6 +123,17 @@ h1 span { font-size:20px;margin-left:-10px; }
 }
   .api-info .bd{
     margin:10px;
+    padding-bottom:15px;
+  }
+  
+  .api-info .bd .italic{
+    font-style:italic;margin-bottom:5px;
+  }
+  .api-info .bd .padded{
+    padding-left:10px;
+  }
+  .api-info .bd .alert{
+    color:#ff7600;
   }
 
 .api-results{
@@ -140,6 +163,7 @@ table.csv-table tr td strong{  }
 
 table.parameter_table{ 
   width:100%;
+  margin-bottom:15px;
 }
 table.parameter_table tbody{
   border-top:1px solid #ebf0d6;

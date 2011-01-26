@@ -79,6 +79,8 @@ tc.api.results.prototype.csv_to_table = function(csv){
       table.append(row)
     } else {
       if(lines[i].length != table_width){
+        tc.util.dump('Dropping row..');
+        tc.util.dump(lines[i]);
         continue;
       }
       row = '<tr>';

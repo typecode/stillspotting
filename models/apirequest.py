@@ -49,9 +49,6 @@ class APIRequest():
     self.run['n_requests_received'] = self.run['n_requests_received'] + 1
     self.output.append(data)
     
-    print self.run['n_requests_received']
-    print self.run['n_requests']
-    
     if self.run['n_requests_received'] == self.run['n_requests']:
       self.finish()
   

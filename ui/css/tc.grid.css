@@ -58,6 +58,7 @@ html[xmlns] .grid { display:block; }
 .x7 { width:844px; }
 .x8 { width:966px; }
 .xFull { width:966px; clear:both; }
+.special { min-width:966px; clear:both; }
 
 /*----- gutters -----*/
 	/* --- In this scheme, the fixed width columns
@@ -77,4 +78,6 @@ html[xmlns] .grid { display:block; }
 .column-r:first-child { margin-right:0; }
 
 .column.xFull,
-.column-r.xFull { margin-left:0; margin-right:0; }
+.column-r.xFull,
+.column.special,
+.column-r.special { margin-left:0; margin-right:0; }

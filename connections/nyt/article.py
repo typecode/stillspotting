@@ -38,16 +38,12 @@ class Article(connections.connection.Connection):
   }
 #### END CONNECTION-SPECIFIC MEMBERS
   
-  request_queue = []
-  request_queue_stopped = True
-  request_queue_timer = None
-  
   def process_request(self,apirequest):
     print 'connections.nyt.article.Article.process_request'
     http = tornado.httpclient.AsyncHTTPClient()
     
     if 'n_to_fetch' in apirequest.pars and apirequest.pars['n_to_fetch'] is not None and float(apirequest.pars['n_to_fetch']) > 10:
-      apirequest.run['n_requests'] = math.ceil(float(apirequest.pars['n_to_fetch'])/10.0)
+      apirequest.run['n_requests'] = int(math.ceil(float(apirequest.pars['n_to_fetch'])/10.0))
     
     print apirequest.pars['n_to_fetch']
     print apirequest.run['n_requests']
@@ -87,29 +83,33 @@ class Article(connections.connection.Connection):
       else:
         self.add_to_queue(generate_request(i))
   
+    @staticmethod
+    def csv(data):
+      print 'connections.nyt.article.Article.csv'
+      generate_header = False
+      header = None
+      output = ""
+      for i in data:
+        if u'results' in i:
+          for j in i[u'results']:
+            row = []
+            if header is None:
+                generate_header = True
+                header = []
+            for k in j:
+              if generate_header is True:
+                header.append(str(k))
+              row.append('"'+str(j[k])+'"')
+            output = output + str('\t'.join(row)) + '\n'
+            generate_header = False
+      output = str('\t'.join(header)) + '\n' + output
+      return output
+  
   ################### END process_request
   
-  @staticmethod
-  def csv(data):
-    print 'connections.nyt.article.Article.csv'
-    generate_header = False
-    header = None
-    output = ""
-    for i in data:
-      if u'results' in i:
-        for j in i[u'results']:
-          row = []
-          if header is None:
-              generate_header = True
-              header = []
-          for k in j:
-            if generate_header is True:
-              header.append(str(k))
-            row.append('"'+str(j[k])+'"')
-          output = output + str('\t'.join(row)) + '\n'
-          generate_header = False
-    output = str('\t'.join(header)) + '\n' + output
-    return output
+  request_queue = []
+  request_queue_stopped = True
+  request_queue_timer = None
   
   def add_to_queue(self,item):
     print 'connections.nyt.article.Article.add_to_queue'

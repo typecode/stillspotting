@@ -33,7 +33,7 @@ var app = {
         });
         app.api.loader = new tc.api.loader(app,{});
         app.api.results = new tc.api.results(app,{
-          width:'xFull',
+          width:'special',
           target_element:'#results_tier'
         });
         break;

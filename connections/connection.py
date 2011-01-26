@@ -17,6 +17,7 @@ class Connection:
 #### START CONNECTION-SPECIFIC MEMBERS
   name = 'Generic Connection'
   description = 'This class defines the interface for an API Connection.'
+  source = None
   default_pars = {
     'min_lat':{'accepted':'-90,90','default':None},
     'max_lat':{'accepted':'-90,90','default':None},
@@ -56,6 +57,7 @@ class Connection:
     info = {}
     info['name'] = self.name
     info['description'] = self.description
+    info['source'] = self.source
     info['default_pars'] = self.default_pars
     info['example_query'] = self.example_query
     return info
