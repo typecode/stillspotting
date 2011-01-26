@@ -12,7 +12,8 @@ class Community(connections.connection.Connection):
   
 #### START CONNECTION-SPECIFIC MEMBERS
   name = 'NYT Community API Connection'
-  description = 'Connects to NYT Community API.'
+  description = 'With the Community API, you can get user-generated NYTimes.com content. The current release includes article comments and readers\' reviews of movies. (Other types of user-generated content will be available in a later version.)'
+  source = 'http://developer.nytimes.com/docs/read/community_api'
   default_pars = {
     'url':{'accepted':'URL to Article Containing Comments','default':None, 'required':False},
     'offset':{'accepted':'integer offset from 0','default':str(0), 'required':False}

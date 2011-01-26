@@ -5,17 +5,19 @@ import hashlib
 import csv
 
 import connections.connection
+import connections.queue
 
 import tornado.httpclient
 
 import math
 import threading
 
-class Article(connections.connection.Connection):
+class Article(connections.connection.Connection,connections.queue.Queue):
   
 #### START CONNECTION-SPECIFIC MEMBERS
   name = 'NYT Article API Connection'
-  description = 'Connects to NYT Article API. This connection supports CSV output.'
+  description = 'With the Article Search API, you can search New York Times articles from 1981 to today, retrieving headlines, abstracts, lead paragraphs and links to associated multimedia. Along with standard keyword searching, the API also offers faceted searching. The available facets include Times-specific fields such as sections, taxonomic classifiers and controlled vocabulary terms (names of people, organizations and geographic locations). Supports CSV Output.'
+  source = 'http://developer.nytimes.com/docs/article_search_api/'
   default_pars = {
     'query':{'accepted':'text string','default':None,'required':True,
       'more_info':'http://developer.nytimes.com/docs/read/article_search_api#h2-queries'},
@@ -83,54 +85,29 @@ class Article(connections.connection.Connection):
       else:
         self.add_to_queue(generate_request(i))
   
-    @staticmethod
-    def csv(data):
-      print 'connections.nyt.article.Article.csv'
-      generate_header = False
-      header = None
-      output = ""
-      for i in data:
-        if u'results' in i:
-          for j in i[u'results']:
-            row = []
-            if header is None:
-                generate_header = True
-                header = []
-            for k in j:
-              if generate_header is True:
-                header.append(str(k))
-              row.append('"'+str(j[k])+'"')
-            output = output + str('\t'.join(row)) + '\n'
-            generate_header = False
-      output = str('\t'.join(header)) + '\n' + output
-      return output
+  @staticmethod
+  def csv(data):
+    print 'connections.nyt.article.Article.csv'
+    header = []
+    rows = []
+    
+    for i in data:
+      if u'results' in i:
+        for j in i[u'results']:
+          row = list("" for i in range(0,100))
+          for k in j:
+            try:
+              hi = header.index(k)
+            except ValueError:
+              header.append(unicode(k))
+              hi = len(header) - 1
+            row[hi] = u'"'+unicode(j[k])+u'"'
+          rows.append(row)
+    output = unicode(u'\t'.join(header))
+    for i in rows:
+      i = i[0:len(header)]
+      output = output + '\n' + unicode(u'\t'.join(i))
+    return output
   
   ################### END process_request
   
-  request_queue = []
-  request_queue_stopped = True
-  request_queue_timer = None
-  
-  def add_to_queue(self,item):
-    print 'connections.nyt.article.Article.add_to_queue'
-    self.request_queue.append(item)
-    if self.request_queue_stopped is True:
-      self.run_queue()
-      
-  def run_queue(self):
-    print 'connections.nyt.article.Article.run_queue'
-    if len(self.request_queue) == 0:
-      self.request_queue_stopped = True
-      print 'connections.nyt.article.Article.run_queue[Queue Stopped]'
-      return
-    elif self.request_queue_stopped is True:
-      print 'connections.nyt.article.Article.run_queue[Queue Started]'
-      self.request_queue_stopped = False
-    t = threading.Timer(1.0,self.make_request)
-    t.start()
-  
-  def make_request(self):
-    print 'connections.nyt.article.Article.make_request'
-    http = tornado.httpclient.AsyncHTTPClient()
-    item = self.request_queue.pop(0)
-    http.fetch(item['url'],callback=item['callback'])

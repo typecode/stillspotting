@@ -14,7 +14,8 @@ class Search(connections.flickr.flickrConnection.FlickrConnection):
   
 #### START CONNECTION-SPECIFIC MEMBERS
   name = 'Flickr Photo Search'
-  description = ''
+  description = 'Return a list of photos matching some criteria. Only photos visible to the calling user will be returned. To return private or semi-private photos, the caller must be authenticated with \'read\' permissions, and have permission to view the photos. Unauthenticated calls will only return public photos.'
+  source = 'http://www.flickr.com/services/api/flickr.photos.search.html'
   default_pars = {
     
   }

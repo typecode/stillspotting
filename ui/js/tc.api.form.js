@@ -60,8 +60,8 @@ tc.api.form.prototype.setup_events = function(){
   this.submit_button.on('click',function(event){
     tc.util.log('tc.api.form.prototype.setup_events(click)');
     var data;
-    if(!_me.query_valid){ return; }
     event.preventDefault();
+    if(!_me.query_valid){ return; }
     data = {};
     data.api = _me.dom.one('select')._node.value;
     data.query = _me.codemirror.getCode();
@@ -70,6 +70,9 @@ tc.api.form.prototype.setup_events = function(){
   this.api_selector.on('change',function(event){
     event.target.get('options').each(function(){
       if(this.get('selected')){
+        if(this.get('value').length == 0){
+          _me.query_valid = false;
+        }
         app.fire('api-form:api-selected',{api:this.get('value')});
         return false;
       }

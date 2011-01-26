@@ -31,7 +31,7 @@ class FlickrConnection(connections.connection.Connection):
     info['default_pars'] = self.default_pars
     info['example_query'] = self.example_query
     info['authorized'] = self.is_user_authenticated(user)
-    
+    info['source'] = self.source
     return info
     
   def generate_auth_url(self):
