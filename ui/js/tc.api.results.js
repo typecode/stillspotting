@@ -65,7 +65,10 @@ tc.api.results.prototype.setup_events = function(){
 tc.api.results.prototype.csv_to_table = function(csv){
   tc.util.log('tc.api.results.prototype.csv_to_table');
   var table,lines,i,j,table_width;
-  table = app.Y.Node.create('<table class="csv-table"></table>');
+  table = app.Y.Node.create('<table class="csv-table">\
+    <thead></thead>\
+    <tbody></tbody>\
+  </table>');
   lines = csv.split('\n');
   for(i in lines){
     lines[i] = lines[i].split('\t');
@@ -76,7 +79,7 @@ tc.api.results.prototype.csv_to_table = function(csv){
         row = row + '<th>'+lines[i][j]+'</th>';
       }
       row = row + '</tr>';
-      table.append(row)
+      table.one('thead')._node.innerHTML = table.one('thead')._node.innerHTML + row;
     } else {
       if(lines[i].length != table_width){
         tc.util.dump('Dropping row..');
@@ -88,7 +91,7 @@ tc.api.results.prototype.csv_to_table = function(csv){
         row = row + '<td>'+lines[i][j]+'</td>';
       }
       row = row + '</tr>';
-      table.append(row)
+      table.one('tbody')._node.innerHTML = table.one('tbody')._node.innerHTML + row;
     }
   }
   return table;
