@@ -123,6 +123,20 @@ h1 span { font-size:20px;margin-left:-10px; }
   .api-results .bd{
     margin:10px;
   }
+    .api-results .bd textarea.plaintext-results{
+      width:100%;
+      height:500px;
+    }
+  
+
+table.csv-table{  }
+table.csv-table tbody{  }
+table.csv-table tr{  }
+table.csv-table tr th,
+table.csv-table tr td{ padding:3px; border:1px solid #cfcfcf;  }
+table.csv-table tr th{  }
+table.csv-table tr td{  }
+table.csv-table tr td strong{  }
 
 table.parameter_table{ 
   width:100%;

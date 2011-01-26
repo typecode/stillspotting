@@ -102,10 +102,12 @@ class api(views.handler.handler):
     print ' |self.request_id: '+str(self.apirequest.requestid)
     print ''
     output = {
-      'format':self.apirequest.pars['output'],
+      'format':'json',
       'request_id':self.apirequest.requestid,
       'data':data
     }
+    if 'output' in self.apirequest.pars:
+      output['format'] = self.apirequest.pars['output']
     self.write(json.dumps(output,default=pymongo.json_util.default))
     self.finish()
   

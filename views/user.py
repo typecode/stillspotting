@@ -20,6 +20,10 @@ class login(views.handler.handler):
   def get(self):
     self.clear_cookie("session_data")
     self.write('<html><body>\
+      Stillspotting\
+      <br /><br />\
+      Please Login or Register\
+      <br /><br />\
       LOGIN:\
       <form action="/login/" method="post">'
       'email: <input type="text" name="email">'

@@ -2,7 +2,6 @@ import sys
 import urllib
 import datetime
 import hashlib
-import md5
 import string
 
 import connections.connection
@@ -33,12 +32,11 @@ class FlickrConnection(connections.connection.Connection):
     info['example_query'] = self.example_query
     info['authorized'] = self.is_user_authenticated(user)
     
-        
     return info
     
   def generate_auth_url(self):
     print 'connections.flickr.flickrConnection.generate_auth_url'
-    m = md5.new()
+    m = hashlib.md5()
     m.update(self.settings['secret'])
     m.update('api_key')
     m.update(self.settings['api_key'])
@@ -50,7 +48,7 @@ class FlickrConnection(connections.connection.Connection):
     print 'connections.flickr.flickrConnection.handle_auth_response'
     http = tornado.httpclient.AsyncHTTPClient()
     
-    m = md5.new()
+    m = hashlib.md5()
     m.update(self.settings['secret'])
     m.update('api_key')
     m.update(self.settings['api_key'])
@@ -82,7 +80,7 @@ class FlickrConnection(connections.connection.Connection):
     
   def generate_api_sig(self,pars):
     print 'connections.flickr.flickrConnection.generate_api_sig'
-    m = md5.new()
+    m = hashlib.md5()
     m.update(self.settings['secret'])
     for i in sorted(pars.iterkeys()):
       m.update(i)

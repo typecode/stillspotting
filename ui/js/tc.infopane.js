@@ -27,5 +27,6 @@ tc.infopane.prototype.update = function(name,value,options){
     this.units[name].one('.name')._node.innerHTML = name;
     this.dom.one('ul').append(this.units[name]);
   }
+
   this.units[name].one('.value')._node.innerHTML = value;
 }

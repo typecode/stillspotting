@@ -34,7 +34,7 @@ class Connection:
   
   def __init__(self,settings):
     self.settings = settings
-    print str(self)
+    #print str(self)
     
   def __repr__(self):
     pp = pprint.PrettyPrinter(indent=1)

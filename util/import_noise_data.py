@@ -59,7 +59,7 @@ def process():
   
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='Import Guggenheim Noise Data.')
-  parser.add_argument('--filename', metavar='f', type=str, nargs='+',help='path to data file')                 
+  parser.add_argument('--filename', metavar='f', type=str, nargs='+',help='path to data file')
   args = parser.parse_args()
   if check_args() is True:
     process()

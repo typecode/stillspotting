@@ -2,7 +2,6 @@ import sys
 import urllib
 import datetime
 import hashlib
-import md5
 import string
 
 import connections.connection
@@ -24,15 +23,15 @@ class Search(connections.flickr.flickrConnection.FlickrConnection):
   }
 #### END CONNECTION-SPECIFIC MEMBERS
   
-  def process_request(self,user,req_id,pars={}):
+  def process_request(self,apirequest):
     print 'connections.flickr.photos.search.Search.process_request'
-    if self.is_user_authenticated(user) is False:
+    if self.is_user_authenticated(apirequest.user) is False:
       return
     http = tornado.httpclient.AsyncHTTPClient()
-    request_pars = self.handle_pars(pars)
+    request_pars = self.handle_pars(apirequest.pars)
     
     request_pars['api_key'] = self.settings['api_key']
-    request_pars['auth_token'] = user.user_data['flickr']['auth']['token']['_content']
+    request_pars['auth_token'] = apirequest.user.user_data['flickr']['auth']['token']['_content']
     request_pars['method'] = 'flickr.photos.search'
     request_pars['format'] = 'json'
     
@@ -45,10 +44,10 @@ class Search(connections.flickr.flickrConnection.FlickrConnection):
       json_string = string.lstrip(response.body,'jsonFlickrApi(')
       json_string = string.rstrip(json_string,');')
       try:
-        json = tornado.escape.json_decode(json_string)
+        data = tornado.escape.json_decode(json_string)
       except TypeError, ValueError:
-        self.emit_api_response(req_id,[response.body])
+        apirequest.handle_error('Flickr Error')
         return
-      self.emit_api_response(req_id,json)
+      apirequest.handle_data(data)
       
     http.fetch(url,callback=handle_response)

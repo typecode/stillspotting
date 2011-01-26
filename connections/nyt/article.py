@@ -15,7 +15,7 @@ class Article(connections.connection.Connection):
   
 #### START CONNECTION-SPECIFIC MEMBERS
   name = 'NYT Article API Connection'
-  description = 'Connects to NYT Article API.'
+  description = 'Connects to NYT Article API. This connection supports CSV output.'
   default_pars = {
     'query':{'accepted':'text string','default':None,'required':True,
       'more_info':'http://developer.nytimes.com/docs/read/article_search_api#h2-queries'},
@@ -34,7 +34,7 @@ class Article(connections.connection.Connection):
     'query':"abstract:noise geo_facet:[NEW YORK CITY]",
     'fields':"title,abstract,geo_facet",
     'output':'csv',
-    'n_to_fetch':100
+    'n_to_fetch':10
   }
 #### END CONNECTION-SPECIFIC MEMBERS
   
@@ -49,6 +49,7 @@ class Article(connections.connection.Connection):
     if 'n_to_fetch' in apirequest.pars and apirequest.pars['n_to_fetch'] is not None and float(apirequest.pars['n_to_fetch']) > 10:
       apirequest.run['n_requests'] = math.ceil(float(apirequest.pars['n_to_fetch'])/10.0)
     
+    print apirequest.pars['n_to_fetch']
     print apirequest.run['n_requests']
     
     def handle_response(response):
@@ -57,6 +58,8 @@ class Article(connections.connection.Connection):
         data = tornado.escape.json_decode(response.body)
       except TypeError, ValueError:
         apirequest.handle_error('NYT Error')
+        self.run_queue()
+        return
       apirequest.handle_data(data)
       self.run_queue()
     
@@ -68,10 +71,13 @@ class Article(connections.connection.Connection):
       for i in ['query','begin_date','end_date','facets','fields','offset','rank']:
         if i in apirequest.pars:
           request['pars'][i] = apirequest.pars[i]
-          request['pars']['offset'] = offset
-          request['pars']['api-key'] = self.settings['api_key']
+      request['pars']['offset'] = offset
+      request['pars']['api-key'] = self.settings['api_key']
       url = 'http://api.nytimes.com/svc/search/v1/article?'
       url = url + urllib.urlencode(request['pars'])
+      
+      print str(url)
+      
       request['url'] = url
       return request
     
@@ -113,7 +119,12 @@ class Article(connections.connection.Connection):
       
   def run_queue(self):
     print 'connections.nyt.article.Article.run_queue'
-    if self.request_queue_stopped is True:
+    if len(self.request_queue) == 0:
+      self.request_queue_stopped = True
+      print 'connections.nyt.article.Article.run_queue[Queue Stopped]'
+      return
+    elif self.request_queue_stopped is True:
+      print 'connections.nyt.article.Article.run_queue[Queue Started]'
       self.request_queue_stopped = False
     t = threading.Timer(1.0,self.make_request)
     t.start()
@@ -121,8 +132,5 @@ class Article(connections.connection.Connection):
   def make_request(self):
     print 'connections.nyt.article.Article.make_request'
     http = tornado.httpclient.AsyncHTTPClient()
-    if len(self.request_queue) == 0:
-      self.request_queue_stopped = True
-      return
     item = self.request_queue.pop(0)
     http.fetch(item['url'],callback=item['callback'])

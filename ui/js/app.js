@@ -36,7 +36,6 @@ var app = {
           width:'xFull',
           target_element:'#results_tier'
         });
-        tc.util.dump(app.api.results);
         break;
       case 'map':
         app.map = new tc.gmap(app,{});

@@ -25,7 +25,7 @@ import views.api
 import views.article
 import views.geoitem
 
-print '\n\r\n\r\n\r\n\r\n\r\n\r'
+print '\n\r\n\r'
 print '========================================================================='
 print ''
 print 'StillSpotting'
@@ -33,7 +33,20 @@ print 'By SIDL'
 print ''
 print 'starting..........................'
 print ''
+
+print 'StillSpotting: Loading Configuration Files'
 print ''
+
+config_file = open('env.json','r')
+try:
+  config = tornado.escape.json_decode(config_file.read())
+except TypeError, ValueError:
+  print 'StillSpotting: ERROR Loading Configuration Files'
+  
+if sys.argv[1] is not None:
+  config = config[sys.argv[1]]
+else:
+  config = config['local']
 
 print 'StillSpotting: Opening MongoDB Connection'
 database = pymongo.Connection('localhost', 27017)
@@ -45,7 +58,7 @@ print ''
 connections = {
   'generic' : connections.connection.Connection({
     'database':database,
-    'disabled':False
+    'disabled':True
   }),
   'nytarticle': connections.nyt.article.Article({
     'api_key':'1b9f2c309a5bb7426b1aa181b2f1a1cc:13:62473522'
@@ -54,19 +67,22 @@ connections = {
     'api_key':'3cd7b97dd0c16c8523ea7ccba7f5fdd1:13:49052537'
   }),
   'googlegeocode': connections.google.geocoder.Geocoder({}),
-  'nyc311noiseComplaints': connections.nyc311.noiseComplaints.NoiseComplaints({}),
+  'nyc311noiseComplaints': connections.nyc311.noiseComplaints.NoiseComplaints({
+    'disabled':True
+  }),
   'flickr': connections.flickr.flickrConnection.FlickrConnection({
-    'api_key':'9ce620aec9b49f8de2cafa5144ab3876',
-    'secret':'05b101b95c7e75d6',
+    'api_key':config[u'flickrApiKey'],
+    'secret':config[u'flickrApiSecret'],
     'disabled':True
   }),
   'flickrsearch': connections.flickr.photos.search.Search({
-    'api_key':'9ce620aec9b49f8de2cafa5144ab3876',
-    'secret':'05b101b95c7e75d6'
+    'api_key':config[u'flickrApiKey'],
+    'secret':config[u'flickrApiSecret']
   }),
   'flickrimages': connections.flickr.photos.geo.photosForLocation.PhotosForLocation({
-    'api_key':'9ce620aec9b49f8de2cafa5144ab3876',
-    'secret':'05b101b95c7e75d6'
+    'api_key':config[u'flickrApiKey'],
+    'secret':config[u'flickrApiSecret'],
+    'disabled':True
   })
 }
 

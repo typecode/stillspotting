@@ -21,13 +21,14 @@ class Geocoder(connections.connection.Connection):
   }
 #### END CONNECTION-SPECIFIC MEMBERS
   
-  def process_request(self,user,req_id,pars):
+  def process_request(self,apirequest):
     print 'connections.google.geocoder.Geocoder.process_request'
     
     def handle_response(response):
-      self.emit_api_response(req_id,response)
+      apirequest.handle_data(response)
+      #self.emit_api_response(req_id,response)
     
-    self.add_to_queue(pars['location'],handle_response)
+    self.add_to_queue(apirequest.pars['location'],handle_response)
   
   local_queue = []
   local_stopped = True

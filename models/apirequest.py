@@ -20,11 +20,8 @@ class APIRequest():
   user = None
   api = None
   pars = None
-  run = {
-    'n_requests':1,
-    'n_requests_received':0
-  }
-  output = []
+  run = None
+  output = None
   emitter = None
   error = None
   
@@ -35,6 +32,11 @@ class APIRequest():
     self.requestid = "".join([random.choice(string.letters+string.digits) for x in xrange(32)])
     self.api = api
     self.pars = pars
+    self.run = {
+      'n_requests':1,
+      'n_requests_received':0
+    }
+    self.output = []
     self.emitter = emitter
     self.error = error
     
@@ -46,6 +48,10 @@ class APIRequest():
     print '#models.apirequest.handle_data'
     self.run['n_requests_received'] = self.run['n_requests_received'] + 1
     self.output.append(data)
+    
+    print self.run['n_requests_received']
+    print self.run['n_requests']
+    
     if self.run['n_requests_received'] == self.run['n_requests']:
       self.finish()
   

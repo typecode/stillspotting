@@ -2,7 +2,6 @@ import sys
 import urllib
 import datetime
 import hashlib
-import md5
 import string
 
 import connections.connection
