@@ -127,7 +127,7 @@ tc.api.info.prototype.render_info_for = function(api){
   
   
   if(this.api_info[api].source){
-    this.dom.one('.bd').append('<p class="italic">(Source: <a href="'+this.api_info[api].source+'">'+this.api_info[api].source+'</a>)</p>');
+    this.dom.one('.bd').append('<p class="italic">(Source:&nbsp;<a href="'+this.api_info[api].source+'">'+this.api_info[api].source+'</a>)</p>');
   }
   
   //this.dom.append('<pre>'+app.Y.JSON.stringify(this.api_info[api].default_pars,null,'&nbsp;&nbsp;')+'</pre>');
