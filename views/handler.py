@@ -25,5 +25,7 @@ class handler(tornado.web.RequestHandler):
     user = models.user.User(session_data=self.get_secure_cookie("session_data"))
     if user.session_data is None:
       return None
+    if user.user_data is None:
+      return None
     return user
     
