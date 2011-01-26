@@ -11,8 +11,8 @@ import pymongo
 class Geocoder(connections.connection.Connection):
   
 #### START CONNECTION-SPECIFIC MEMBERS
-  name = 'Google Reverse Geocoder'
-  description = 'Geocoding is the process of converting addresses (like "1600 Amphitheatre Parkway, Mountain View, CA") into geographic coordinates (like latitude 37.423021 and longitude -122.083739), which you can use to place markers or position the map. The Google Geocoding API provides a direct way to access a geocoder via an HTTP request. Additionally, the service allows you to perform the converse operation (turning coordinates into addresses); this process is known as "reverse geocoding."'
+  name = 'Google Geocoder'
+  description = 'Geocoding is the process of converting addresses (like "1600 Amphitheatre Parkway, Mountain View, CA") into geographic coordinates (like latitude 37.423021 and longitude -122.083739), which you can use to place markers or position the map. The Google Geocoding API provides a direct way to access a geocoder via an HTTP request."'
   source = 'http://code.google.com/apis/maps/documentation/geocoding/'
   default_pars = {
     'location':{'accepted':'string formatted location','default':None,'required':True}
