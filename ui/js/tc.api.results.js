@@ -70,6 +70,9 @@ tc.api.results.prototype.csv_to_table = function(csv){
     <tbody></tbody>\
   </table>');
   lines = csv.split('\n');
+  if(lines.length > 250){
+    return;
+  }
   for(i in lines){
     lines[i] = lines[i].split('\t');
     if(i == 0){

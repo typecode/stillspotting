@@ -67,4 +67,4 @@ class APIRequest():
   def handle_error(self,msg):
     print '#models.apirequest.handle_error'
     self.api.end_request(self.requestid)
-    self.error(data)
+    self.error(msg)
