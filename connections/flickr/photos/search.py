@@ -26,8 +26,8 @@ class Search(connections.flickr.flickrConnection.FlickrConnection):
   
   def process_request(self,apirequest):
     print 'connections.flickr.photos.search.Search.process_request'
-    if self.is_user_authenticated(apirequest.user) is False:
-      return
+    #if self.is_user_authenticated(apirequest.user) is False:
+    #  return
     http = tornado.httpclient.AsyncHTTPClient()
     request_pars = self.handle_pars(apirequest.pars)
     
