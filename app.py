@@ -66,9 +66,12 @@ connections = {
     'api_key':'1b9f2c309a5bb7426b1aa181b2f1a1cc:13:62473522'
   }),
   'nytcommunity': connections.nyt.community.Community({
+    'disabled':True,
     'api_key':'3cd7b97dd0c16c8523ea7ccba7f5fdd1:13:49052537'
   }),
-  'googlegeocode': connections.google.geocoder.Geocoder({}),
+  'googlegeocode': connections.google.geocoder.Geocoder({
+    'disabled':True
+  }),
   'nyc311noiseComplaints': connections.nyc311.noiseComplaints.NoiseComplaints({
     'disabled':True
   }),
