@@ -124,7 +124,6 @@ class Search(connections.flickr.flickrConnection.FlickrConnection):
     for i in data:
       if u'photos' in i:
         if u'photo' in i[u'photos']:
-          print str(i[u'photos'][u'photo'])
           for j in i[u'photos'][u'photo']:
             row = list("" for i in range(0,100))
             for k in j:
