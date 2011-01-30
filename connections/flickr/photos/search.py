@@ -83,6 +83,7 @@ class Search(connections.flickr.flickrConnection.FlickrConnection):
     'text':'quiet still',
     'bbox':'-73.9873289,40.720113,-73.972849,40.731099',
     'extras':'geo,url_o,tags',
+    'output':'csv'
   }
 #### END CONNECTION-SPECIFIC MEMBERS
   
