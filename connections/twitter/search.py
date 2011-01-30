@@ -53,11 +53,11 @@ class Search(connections.connection.Connection,connections.queue.Queue):
         return
       apirequest.handle_data(data)
       
-      print '\n\r\n\r'
-      print str(data)
-      print '\n\r\n\r'
-      print str(len(data[u'results']))
-      print '\n\r\n\r'
+      #print '\n\r\n\r'
+      #print str(data)
+      #print '\n\r\n\r'
+      #print str(len(data[u'results']))
+      #print '\n\r\n\r'
       
       if apirequest.run['n_requests_received'] < apirequest.run['n_requests']:
         if u'next_page' in data:
@@ -70,16 +70,16 @@ class Search(connections.connection.Connection,connections.queue.Queue):
           
           #Fri, 21 Jan 2011 23:01:07 +0000
           oldest_date_string = data[u'results'][len(data[u'results'])-1][u'created_at'][0:len(data[u'results'][len(data[u'results'])-1][u'created_at'])-6]
-          print oldest_date_string
+          #print oldest_date_string
           oldest_date = datetime.datetime.strptime(oldest_date_string, '%a, %d %b %Y %H:%M:%S')
-          print str(oldest_date)
+          #print str(oldest_date)
           #YYYY-MM-DD
           until = oldest_date.strftime('%Y-%m-%d')
-          print until
+          #print until
           next_request_pars['until'] = until
-          print str(next_request_pars)
+          #print str(next_request_pars)
           url = 'http://search.twitter.com/search.json?' + urllib.urlencode(next_request_pars)
-          print url
+          #print url
           self.add_to_queue({
             'url':url,
             'callback':handle_response
@@ -89,11 +89,11 @@ class Search(connections.connection.Connection,connections.queue.Queue):
         
       self.run_queue()
     
-    print '\n\r\n\r'
-    print str(request_pars)
-    url = 'http://search.twitter.com/search.json?' + urllib.urlencode(request_pars)
-    print url
-    print '\n\r\n\r'
+    #print '\n\r\n\r'
+    #print str(request_pars)
+    #url = 'http://search.twitter.com/search.json?' + urllib.urlencode(request_pars)
+    #print url
+    #print '\n\r\n\r'
     
     self.add_to_queue({
       'url':url,
