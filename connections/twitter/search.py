@@ -91,7 +91,7 @@ class Search(connections.connection.Connection,connections.queue.Queue):
     
     #print '\n\r\n\r'
     #print str(request_pars)
-    #url = 'http://search.twitter.com/search.json?' + urllib.urlencode(request_pars)
+    url = 'http://search.twitter.com/search.json?' + urllib.urlencode(request_pars)
     #print url
     #print '\n\r\n\r'
     
